@@ -1,0 +1,49 @@
+---
+#https://stackoverflow.com/questions/41631770/get-dict-value-from-variable-key-in-ansible/41631874#41631874
+#ansible-playbook -i host.txt task.yml --tags="stop" -e "server_name=server2"
+- hosts: "{{server_name}}"
+  gather_facts: no
+  tasks:
+    - name: "push {{server_name}}"
+      copy:
+        src: '{{item.src}}'
+        dest: '{{item.dest}}'
+      with_items:
+        "{{deploy_info[server_name].push}}"
+      tags:
+        - push
+    - name: "start {{server_name}}"
+      shell:
+        cmd: '{{deploy_info[server_name].start}}'
+      register: ret
+      tags:
+        - start
+    - name: "start {{server_name}} print"
+      debug: 
+        msg: "{{ret.stdout.split('\n')}}"
+      tags:
+        - start
+
+    - name: "stop {{server_name}}"
+      shell:
+        cmd: '{{deploy_info[server_name].stop}}'
+      register: ret  
+      tags:
+        - stop
+    - name: "stop {{server_name}} print"
+      debug: 
+        msg: "{{ret.stdout.split('\n')}}"
+      tags:
+        - stop
+
+    - name: "restart {{server_name}}"
+      shell:
+        cmd: '{{deploy_info[server_name].restart}}'
+      register: ret  
+      tags:
+        - restart
+    - name: "restart {{server_name}} print"
+      debug: 
+        msg: "{{ret.stdout.split('\n')}}"
+      tags:
+        - restart
