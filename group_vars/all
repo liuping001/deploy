@@ -1,16 +1,18 @@
 deploy_info:
   server1:
     push:
-      - src: /tmp/1.txt
-        dest: /tmp/1_1.txt
-    start: "cd / && cat /tmp/1_1.txt"
-    stop: "cd / && rm /tmp/1_1.txt"
-    restart: "cd / && ls -l"
+      - src: /tmp/test.py
+        dest: /tmp/server_1.py
+    start: "nohup python /tmp/server_1.py &"
+    stop: "pkill -f server_1"
+    restart: "pkill -f server_1 && python /tmp/server_1.py &"
+    status: "ps -ef|grep server_1|grep -v grep"
 
   server2:
     push:
-      - src: /tmp/2.txt
-        dest: /tmp/2_1.txt  
-    start: "cd / && cat /tmp/1_1.txt"
-    stop: "cd / && rm /tmp/2_1.txt"
-    restart: "cd / && ls -l"
+      - src: /tmp/test.py
+        dest: /tmp/server_2.py
+    start: "nohup python /tmp/server_2.py &"
+    stop: "pkill -f server_2"
+    restart: "pkill -f server_2 && python /tmp/server_2.py &"
+    status: "ps -ef|grep server_2|grep -v grep"

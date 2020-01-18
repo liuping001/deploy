@@ -47,3 +47,15 @@
         msg: "{{ret.stdout.split('\n')}}"
       tags:
         - restart
+
+    - name: "status {{server_name}}"
+      shell:
+        cmd: '{{deploy_info[server_name].status}}'
+      register: ret  
+      tags:
+        - status
+    - name: "status {{server_name}} print"
+      debug: 
+        msg: "{{ret.stdout.split('\n')}}"
+      tags:
+        - status

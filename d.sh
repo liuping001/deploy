@@ -6,7 +6,7 @@ usage()
     echo "\t$0 host.txt push server1 server2"
 }
 
-if [ $# -lt 4 ];then
+if [ $# -lt 3 ];then
     usage
     exit
 fi
