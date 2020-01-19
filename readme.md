@@ -9,8 +9,8 @@
 sudo yum install ansible -y
 ```
 
-# 使用
-### 在group_vars/all定义部署服务的配置项
+# 使用 [example]  
+### 在test_server_define.yml定义部署服务的配置项
 * 每种行为定义都是可选的  
 * 对服务可以进行的行为有[push, init_cmd, start,stop,restart, status]
 ```yaml
