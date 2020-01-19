@@ -36,7 +36,9 @@
         - start
     - name: "start {{server_name}} print"
       debug: 
-        msg: "{{ret.stdout.split('\n')}}"
+        msg:
+         - "{{ret.stdout.split('\n')}}"
+         - "{{ret.stderr.split('\n')}}"
       tags:
         - start
 
@@ -44,12 +46,15 @@
     - name: "stop {{server_name}}"
       shell:
         cmd: '{{deploy_info[server_name].stop}}'
-      register: ret  
+      register: ret
+      failed_when: "ret.stderr != ''"
       tags:
         - stop
     - name: "stop {{server_name}} print"
       debug: 
-        msg: "{{ret.stdout.split('\n')}}"
+        msg:
+         - "{{ret.stdout.split('\n')}}"
+         - "{{ret.stderr.split('\n')}}"
       tags:
         - stop
 
@@ -62,7 +67,9 @@
         - restart
     - name: "restart {{server_name}} print"
       debug: 
-        msg: "{{ret.stdout.split('\n')}}"
+        msg:
+         - "{{ret.stdout.split('\n')}}"
+         - "{{ret.stderr.split('\n')}}"
       tags:
         - restart
 
@@ -70,11 +77,14 @@
     - name: "status {{server_name}}"
       shell:
         cmd: '{{deploy_info[server_name].status}}'
-      register: ret  
+      register: ret
+      failed_when: "ret.stderr != ''"
       tags:
         - status
     - name: "status {{server_name}} print"
-      debug: 
-        msg: "{{ret.stdout.split('\n')}}"
+      debug:
+        msg:
+         - "{{ret.stdout.split('\n')}}"
+         - "{{ret.stderr.split('\n')}}"
       tags:
         - status
