@@ -4,14 +4,28 @@
 - hosts: "{{server_name}}"
   gather_facts: no
   tasks:
+    # push server files
     - name: "push {{server_name}}"
       copy:
         src: '{{item.src}}'
         dest: '{{item.dest}}'
+        backup: yes
+        mode: preserve
       with_items:
         "{{deploy_info[server_name].push}}"
       tags:
         - push
+    # init cmd for server
+    - name: "init_cmd {{server_name}}"
+      shell:
+        cmd: '{{item}}'
+        warn: False
+      with_items:
+        '{{deploy_info[server_name].init_cmd}}'
+      tags:
+        - init_cmd
+
+    # start server
     - name: "start {{server_name}}"
       shell:
         cmd: '{{deploy_info[server_name].start}}'
@@ -24,6 +38,7 @@
       tags:
         - start
 
+    # stop server
     - name: "stop {{server_name}}"
       shell:
         cmd: '{{deploy_info[server_name].stop}}'
@@ -36,6 +51,7 @@
       tags:
         - stop
 
+    # restart server
     - name: "restart {{server_name}}"
       shell:
         cmd: '{{deploy_info[server_name].restart}}'
@@ -48,6 +64,7 @@
       tags:
         - restart
 
+    # status server
     - name: "status {{server_name}}"
       shell:
         cmd: '{{deploy_info[server_name].status}}'
