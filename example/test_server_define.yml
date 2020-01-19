@@ -1,22 +1,21 @@
 deploy_info:
   server1:
     push:
-      - src: /tmp/test.py
+      - src: example/test.py
         dest: /tmp/server_1.py
+      - src: example/supervisor.conf
+        dest: /tmp/supervisor.conf
     init_cmd:
       - "mkdir -p /tmp/server_1_log"
-    start: "nohup python /tmp/server_1.py &"
-    stop: "pkill -f server_1"
-    restart: "pkill -f server_1 && python /tmp/server_1.py &"
-    status: "ps -ef|grep server_1|grep -v grep"
+    supervisor_conf: /tmp/supervisor.conf
 
   server2:
     push:
-      - src: /tmp/test.py
+      - src: example/test.py
         dest: /tmp/server_2.py
+      - src: example/supervisor.conf
+        dest: /tmp/supervisor.conf
     init_cmd:
       - "mkdir -p /tmp/server_2_log"
-    start: "nohup python /tmp/server_2.py &"
-    stop: "pkill -f server_2"
-    restart: "pkill -f server_2 && python /tmp/server_2.py &"
-    status: "ps -ef|grep server_2|grep -v grep"
+    supervisor_conf: /tmp/supervisor.conf  
+

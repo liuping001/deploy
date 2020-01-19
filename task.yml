@@ -29,62 +29,38 @@
 
     # start server
     - name: "start {{server_name}}"
-      shell:
-        cmd: '{{deploy_info[server_name].start}}'
-      register: ret
-      tags:
-        - start
-    - name: "start {{server_name}} print"
-      debug: 
-        msg:
-         - "{{ret.stdout.split('\n')}}"
-         - "{{ret.stderr.split('\n')}}"
+      supervisorctl:
+        name: "{{server_name}}"
+        state: started
+        config: "{{deploy_info[server_name].supervisor_conf}}"
       tags:
         - start
 
     # stop server
     - name: "stop {{server_name}}"
-      shell:
-        cmd: '{{deploy_info[server_name].stop}}'
-      register: ret
-      failed_when: "ret.stderr != ''"
-      tags:
-        - stop
-    - name: "stop {{server_name}} print"
-      debug: 
-        msg:
-         - "{{ret.stdout.split('\n')}}"
-         - "{{ret.stderr.split('\n')}}"
+      supervisorctl:
+        name: "{{server_name}}"
+        state: stoped
+        config: "{{deploy_info[server_name].supervisor_conf}}"
       tags:
         - stop
 
+
     # restart server
     - name: "restart {{server_name}}"
-      shell:
-        cmd: '{{deploy_info[server_name].restart}}'
-      register: ret  
-      tags:
-        - restart
-    - name: "restart {{server_name}} print"
-      debug: 
-        msg:
-         - "{{ret.stdout.split('\n')}}"
-         - "{{ret.stderr.split('\n')}}"
+      supervisorctl:
+        name: "{{server_name}}"
+        state: restarted
+        config: "{{deploy_info[server_name].supervisor_conf}}"
       tags:
         - restart
 
     # status server
     - name: "status {{server_name}}"
-      shell:
-        cmd: '{{deploy_info[server_name].status}}'
-      register: ret
-      failed_when: "ret.stderr != ''"
+      supervisorctl:
+        name: "{{server_name}}"
+        state: present
+        config: "{{deploy_info[server_name].supervisor_conf}}"
       tags:
         - status
-    - name: "status {{server_name}} print"
-      debug:
-        msg:
-         - "{{ret.stdout.split('\n')}}"
-         - "{{ret.stderr.split('\n')}}"
-      tags:
-        - status
+
