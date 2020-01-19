@@ -1,19 +1,19 @@
 #!/bin/sh
 usage()
 {
-    echo "Usage: $0 [host.txt] [start] [server_name]... "
+    echo "Usage: $0 [server_define.yml] [host.txt] [start] [server_name]... "
     echo "example:"
-    echo "\t$0 host.txt push server1 server2"
+    echo "    $0 server_define.yml host.txt push server1 server2"
 }
 
-if [ $# -lt 3 ];then
+if [ $# -lt 4 ];then
     usage
     exit
 fi
 
-for server in ${@:3};
+for server in ${@:4};
 do
     # echo $server
-    ansible-playbook -i $1 task.yml --tags="$2" -e "server_name=$server"
+    ansible-playbook -i $2 task.yml --tags="$3" -e "server_name=$server server_define_file=$1"
 done;
  

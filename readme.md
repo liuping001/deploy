@@ -1,8 +1,8 @@
 # 简介
 这是一个通用的服务器部署工具。  
-1. 通过在group_vars/all配置文件中描述每个服务的部署行为，如[push, init_cmd, start,stop,restart, status]
-2. 通过在host文件中描述每个服务需要部署到那些机器上
-3. 使用"d.sh host文件 对服务的行为 服务列表" 进行部署。例如 "./d.sh host.txt push server1"
+1. 通过在server_define.yml配置文件中描述每个服务的部署行为，如[push, init_cmd, start,stop,restart, status]
+2. 通过在host.txt文件中描述每个服务需要部署到那些机器上
+3. 使用"d.sh server_define.yml host.txt 对服务的行为 服务列表" 进行部署。例如 "./d.sh server_define.yml host.txt push server1"
  
 # 安装依赖
 ```shell script
@@ -11,7 +11,8 @@ sudo yum install ansible -y
 
 # 使用
 ### 在group_vars/all定义部署服务的配置项
-每种行为定义都是可选的
+* 每种行为定义都是可选的  
+* 对服务可以进行的行为有[push, init_cmd, start,stop,restart, status]
 ```yaml
 deploy_info:
   server1:
@@ -37,7 +38,7 @@ deploy_info:
     status: "ps -ef|grep server_2|grep -v grep"
 
 ```
-对服务可以进行的行为有[push、start、stop、restart]
+
 ### 定义每个服务需要部署到那些host上
 ```yaml
 127.0.0.1 ansible_ssh_user=liuping ansible_ssh_pass=liuping ansible_sudo_pass=liuping
@@ -49,7 +50,7 @@ deploy_info:
 
 ### 部署例子
 ```shell script
-./d.sh host.txt push server1 server2 #push 启动server1、server2需要的文件
-./d.sh host.txt init_cmd server1 server2 # init cmd 
-./d.sh host.txt start server1 server2 #启动 server1、server2
+./d.sh test_server_define.yml host.txt push server1 server2 #push 启动server1、server2需要的文件
+./d.sh test_server_define.yml host.txt init_cmd server1 server2 # init cmd 
+./d.sh test_server_define.yml host.txt start server1 server2 #启动 server1、server2
 ```

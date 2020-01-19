@@ -3,6 +3,8 @@
 #ansible-playbook -i host.txt task.yml --tags="stop" -e "server_name=server2"
 - hosts: "{{server_name}}"
   gather_facts: no
+  vars_files:
+    - "{{server_define_file}}"
   tasks:
     # push server files
     - name: "push {{server_name}}"
