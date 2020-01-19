@@ -50,7 +50,7 @@ deploy_info:
 
 ### 部署例子
 ```shell script
-./d.sh test_server_define.yml host.txt push server1 server2 #push 启动server1、server2需要的文件
-./d.sh test_server_define.yml host.txt init_cmd server1 server2 # init cmd 
-./d.sh test_server_define.yml host.txt start server1 server2 #启动 server1、server2
+./d.sh example/test_server_define.yml example/host.txt push server1 server2 #push 启动server1、server2需要的文件
+./d.sh example/test_server_define.yml example/host.txt init_cmd server1 server2 # init cmd 
+./d.sh example/test_server_define.yml example/host.txt start server1 server2 #启动 server1、server2
 ```
