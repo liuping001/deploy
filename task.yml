@@ -1,6 +1,6 @@
 ---
 #https://stackoverflow.com/questions/41631770/get-dict-value-from-variable-key-in-ansible/41631874#41631874
-#ansible-playbook -i host.txt task.yml --tags="stop" -e "server_name=server2"
+#ansible-playbook -i host.txt task.yml --tags="stop" -e "server_name=server2 server_define_file=server.yml"
 - hosts: "{{server_name}}"
   gather_facts: no
   vars_files:
@@ -40,7 +40,7 @@
     - name: "stop {{server_name}}"
       supervisorctl:
         name: "{{server_name}}"
-        state: stoped
+        state: stopped
         config: "{{deploy_info[server_name].supervisor_conf}}"
       tags:
         - stop
@@ -57,10 +57,15 @@
 
     # status server
     - name: "status {{server_name}}"
-      supervisorctl:
-        name: "{{server_name}}"
-        state: present
-        config: "{{deploy_info[server_name].supervisor_conf}}"
+      shell:
+        cmd: 'supervisorctl -c {{deploy_info[server_name].supervisor_conf}} status {{server_name}}'
+      register: ret
+      failed_when: "ret.stderr != ''"
+      tags:
+        - status
+    - name: "status {{server_name}} print"
+      debug:
+        var: ret.stdout
       tags:
         - status
 

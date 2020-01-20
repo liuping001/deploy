@@ -7,9 +7,10 @@
 # 安装依赖
 ```shell script
 sudo yum install ansible -y
+pip install supervisor
 ```
 
-# 使用 [example]  
+# 使用   
 ### 在test_server_define.yml定义部署服务的配置项
 * 每种行为定义都是可选的  
 * 对服务可以进行的行为有[push, init_cmd, start,stop,restart, status]
@@ -19,23 +20,20 @@ deploy_info:
     push: # 支持数组
       - src: /tmp/test.py
         dest: /tmp/server_1.py
+      - src: example/supervisor.conf
+        dest: /etc/supervisord.d/my_server.conf
     init_cmd: # 支持数组
       - "mkdir -p /tmp/server_1_log"
-    start: "nohup python /tmp/server_1.py &"
-    stop: "pkill -f server_1"
-    restart: "pkill -f server_1 && python /tmp/server_1.py &"
-    status: "ps -ef|grep server_1|grep -v grep"
-
+    supervisor_conf: /etc/supervisord.conf
   server2:
     push:
       - src: /tmp/test.py
         dest: /tmp/server_2.py
-    init_cmd: 
+      - src: example/supervisor.conf
+        dest: /etc/supervisord.d/my_server.conf
+    init_cmd: # 支持数组
       - "mkdir -p /tmp/server_2_log"
-    start: "nohup python /tmp/server_2.py &"
-    stop: "pkill -f server_2"
-    restart: "pkill -f server_2 && python /tmp/server_2.py &"
-    status: "ps -ef|grep server_2|grep -v grep"
+    supervisor_conf: /etc/supervisord.conf
 
 ```
 

@@ -7,7 +7,7 @@ deploy_info:
         dest: /tmp/supervisor.conf
     init_cmd:
       - "mkdir -p /tmp/server_1_log"
-    supervisor_conf: /tmp/supervisor.conf
+    supervisor_conf: /home/liuping/super/supervisord.conf
 
   server2:
     push:
@@ -17,5 +17,5 @@ deploy_info:
         dest: /tmp/supervisor.conf
     init_cmd:
       - "mkdir -p /tmp/server_2_log"
-    supervisor_conf: /tmp/supervisor.conf  
+    supervisor_conf: /home/liuping/super/supervisord.conf
 
