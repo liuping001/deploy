@@ -14,6 +14,7 @@ fi
 for server in ${@:4};
 do
     # echo $server
-    ansible-playbook -i $2 task.yml --tags="$3" -e "server_name=$server server_define_file=$1"
+    export ANSIBLE_FORCE_COLOR=true
+    ansible-playbook -i $2 task.yml --tags="$3" -e "server_name=$server server_define_file=$1" |grep -v -P 'PLAY|unreachable|WARN'
 done;
  
