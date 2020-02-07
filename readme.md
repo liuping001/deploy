@@ -9,6 +9,10 @@
 sudo yum install ansible -y
 pip install supervisor
 ```
+# 安装d.sh
+```
+./install.sh
+```
 
 # 使用   
 ### 在test_server_define.yml定义部署服务的配置项
@@ -47,7 +51,7 @@ deploy_info:
 ### 部署例子
 * 对服务可以进行的行为有[push, init_cmd, start,stop,restart, status]
 ```shell script
-./d.sh example/test_server_define.yml example/host.txt push server1 server2 #push 启动server1、server2需要的文件
-./d.sh example/test_server_define.yml example/host.txt init_cmd server1 server2 # init cmd 
-./d.sh example/test_server_define.yml example/host.txt start server1 server2 #启动 server1、server2
+d.sh example/test_server_define.yml example/host.txt push server1 server2 #push 启动server1、server2需要的文件
+d.sh example/test_server_define.yml example/host.txt init_cmd server1 server2 # init cmd
+d.sh example/test_server_define.yml example/host.txt start server1 server2 #启动 server1、server2
 ```
