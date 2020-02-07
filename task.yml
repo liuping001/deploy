@@ -18,7 +18,7 @@
       tags:
         - push
     # init cmd for server
-    - name: "init_cmd {{server_name}}"
+    - name: "init {{server_name}}"
       shell:
         cmd: '{{item}}'
         warn: False

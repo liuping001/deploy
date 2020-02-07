@@ -2,9 +2,9 @@ deploy_info:
   init_host:
     push:
       - src: example/supervisor.ini
-        dest: /etc/supervisord.d/supervisor.conf
+        dest: /etc/supervisord.d/supervisor.ini
     init_cmd:
-      - "supervisorctl reload"
+      - "supervisorctl update"
 
   server1:
     push:
