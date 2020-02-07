@@ -14,7 +14,7 @@
         backup: yes
         mode: preserve
       with_items:
-        "{{deploy_info[server_name].push}}"
+        "{{deploy_info[server_name].push|default({})}}"
       tags:
         - push
     # init cmd for server
@@ -23,7 +23,7 @@
         cmd: '{{item}}'
         warn: False
       with_items:
-        '{{deploy_info[server_name].init_cmd}}'
+        '{{deploy_info[server_name].init_cmd|default({})}}'
       tags:
         - init_cmd
 
