@@ -1,5 +1,5 @@
 deploy_info:
-  common:
+  init_host:
     push:
       - src: example/supervisor.ini
         dest: /etc/supervisord.d/supervisor.conf
