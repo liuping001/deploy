@@ -1,21 +1,24 @@
 deploy_info:
+  common:
+    push:
+      - src: example/supervisor.ini
+        dest: /etc/supervisord.d/supervisor.conf
+    init_cmd:
+      - "supervisorctl reload"
+
   server1:
     push:
       - src: example/test.py
         dest: /tmp/server_1.py
-      - src: example/supervisor.conf
-        dest: /tmp/supervisor.conf
     init_cmd:
       - "mkdir -p /tmp/server_1_log"
-    supervisor_conf: /home/liuping/super/supervisord.conf
+    supervisor_conf: /etc/supervisord.conf
 
   server2:
     push:
       - src: example/test.py
         dest: /tmp/server_2.py
-      - src: example/supervisor.conf
-        dest: /tmp/supervisor.conf
     init_cmd:
       - "mkdir -p /tmp/server_2_log"
-    supervisor_conf: /home/liuping/super/supervisord.conf
+    supervisor_conf: /etc/supervisord.conf
 
