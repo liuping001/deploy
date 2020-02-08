@@ -1,4 +1,4 @@
-127.0.0.1 ansible_ssh_user=root ansible_ssh_pass=root ansible_ssh_port=20000
+127.0.0.1 ansible_ssh_user=root ansible_ssh_pass=root
 
 [server1]
 127.0.0.1
