@@ -1,9 +1,21 @@
 #!/bin/sh
 usage()
 {
-    echo "Usage: $0 [server_define.yml] [host.txt] [start] [server_name]... "
+    echo ""
+    echo "Usage: deploy [server.yml] [host.txt] [start] [server_name]... "
+    echo ""
     echo "example:"
-    echo "    $0 server_define.yml host.txt push server1 server2"
+    echo "    deploy server.yml host.txt push server1 server2"
+    echo ""
+    echo "all action:"
+    echo "    deploy server.yml host.txt [push]     # copy file"
+    echo "    deploy server.yml host.txt [init]     # run shell cmd"
+    echo "    deploy server.yml host.txt [start]    # supervisor"
+    echo "    deploy server.yml host.txt [stop]     # supervisor"
+    echo "    deploy server.yml host.txt [status]   # supervisor"
+    echo "    deploy server.yml host.txt [restart]  # supervisor"
+    echo "    deploy server.yml host.txt [install]  # crontab"
+    echo "    deploy server.yml host.txt [remove]   # crontab"
 
 }
 CUR_DIR=`pwd`
