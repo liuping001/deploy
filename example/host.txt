@@ -6,7 +6,7 @@
 [server2]
 127.0.0.1
 
-[server2]
+[server3]
 127.0.0.1
 
 [init_host]
