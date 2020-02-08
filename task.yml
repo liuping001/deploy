@@ -70,7 +70,7 @@
       tags:
         - status
 
-    - name: "install cron"
+    - name: "install cron {{server_name}}"
       cron:
         name: "{{item.name|default('*')}}"
         minute: "{{item.minute|default('*')}}"
@@ -80,11 +80,11 @@
         weekday: "{{item.weekday|default('*')}}"
         job: "{{item.job}}"
       with_items:
-        "{{deploy_info[server_name].install|default({})}}"
+        "{{deploy_info[server_name].crontab|default({})}}"
       tags:
         - install
 
-    - name: "install cron"
+    - name: "uninstall cron {{server_name}}"
       cron:
         name: "{{item.name|default('*')}}"
         minute: "{{item.minute|default('*')}}"
@@ -95,6 +95,6 @@
         job: "{{item.job}}"
         state: absent
       with_items:
-        "{{deploy_info[server_name].install|default({})}}"
+        "{{deploy_info[server_name].crontab|default({})}}"
       tags:
         - uninstall
