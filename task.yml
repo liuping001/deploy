@@ -25,6 +25,7 @@
       with_items:
         '{{deploy_info[server_name].init_cmd|default({})}}'
       tags:
+        - init
         - init_cmd
 
     # start server
@@ -69,3 +70,16 @@
       tags:
         - status
 
+    - name: "install cron"
+      cron:
+        name: "{{item.name|default('*')}}"
+        minute: "{{item.minute|default('*')}}"
+        hour: "{{item.hour|default('*')}}"
+        day: "{{item.day|default('*')}}"
+        month: "{{item.month|default('*')}}"
+        weekday: "{{item.weekday|default('*')}}"
+        job: "{{item.job}}"
+      with_items:
+        "{{deploy_info[server_name].install|default({})}}"
+      tags:
+        - install
