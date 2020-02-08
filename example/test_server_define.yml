@@ -27,5 +27,5 @@ deploy_info:
     push:
       - src: example/hello.sh
         dest: /tmp/hello.sh
-    install:
-      - { name=hello, minute=5, hour=1, job="/tmp/hello.sh"}
+    crontab:
+      - {name: hello, minute: 5, hour: 1, job=/tmp/hello.sh}
