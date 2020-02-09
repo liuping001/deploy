@@ -1,6 +1,6 @@
 # 简介
 这是一个通用的服务器部署工具。  
-1. 通过在server_define.yml配置文件中描述每个服务的部署行为，如[push, init_cmd]
+1. 通过在server_define.yml配置文件中描述每个服务的部署行为，如[copy_file, template, init_cmd]
 2. 通过在host.txt文件中描述每个服务需要部署到那些机器上
 3. 使用"d.sh server_define.yml host.txt 对服务的行为 服务列表" 进行部署。例如 "deploy server_define.yml host.txt push server1"
  
@@ -19,11 +19,12 @@ sudo yum install supervisor -y
 ```yaml
 deploy_info:
   init_host:
+    copy_file:
       - src: example/supervisor.conf
         dest: /etc/supervisord.d/my_server.conf
 
   server1:
-    push: # 支持数组
+    copy_file: # 支持数组
       - src: /tmp/test.py
         dest: /tmp/server_1.py
     init_cmd: # 支持数组
@@ -31,7 +32,7 @@ deploy_info:
     supervisor_conf: /etc/supervisord.conf
   #定时任务
   server3:
-    push:
+    copy_file:
       - src: example/hello.sh
         dest: /tmp/hello.sh
     crontab:
@@ -41,7 +42,7 @@ deploy_info:
 ### 以下列出了server的所有行为以及其对应的属性。
 action|属性
 -|-
-push|push
+push|copy_file,template
 init|init_cmd
 start|
 stop|
@@ -60,7 +61,6 @@ remove|crontab
 ```
 
 ### 部署例子
-* 对服务可以进行的行为有[push, init_cmd, start,stop,restart, status]
 ```shell script
 deploy example/test_server_define.yml example/host.txt push server1 server2 #push 启动server1、server2需要的文件
 deploy example/test_server_define.yml example/host.txt init_cmd server1 server2 # init cmd

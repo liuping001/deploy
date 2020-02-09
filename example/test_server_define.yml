@@ -1,13 +1,13 @@
 deploy_info:
   init_host:
-    push:
+    template:
       - src: example/supervisor.ini
         dest: /etc/supervisord.d/supervisor.ini
     init_cmd:
       - "supervisorctl update"
 
   server1:
-    push:
+    copy_file:
       - src: example/test.py
         dest: /tmp/server_1.py
     init_cmd:
@@ -15,7 +15,7 @@ deploy_info:
     supervisor_conf: /etc/supervisord.conf
 
   server2:
-    push:
+    copy_file:
       - src: example/test.py
         dest: /tmp/server_2.py
     init_cmd:
@@ -24,7 +24,7 @@ deploy_info:
 
 # 安装定时任务
   server3:
-    push:
+    copy_file:
       - src: example/hello.sh
         dest: /tmp/hello.sh
     crontab:

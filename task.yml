@@ -7,16 +7,29 @@
     - "{{server_define_file}}"
   tasks:
     # push server files
-    - name: "push {{server_name}}"
+    - name: "push {{server_name}} copy"
       copy:
         src: '{{work_dir}}/{{item.src}}'
         dest: '{{item.dest}}'
         backup: yes
         mode: preserve
       with_items:
-        "{{deploy_info[server_name].push|default({})}}"
+        "{{deploy_info[server_name].copy_file|default({})}}"
       tags:
         - push
+
+    # push server files
+    - name: "push {{server_name}} template"
+      template:
+        src: '{{work_dir}}/{{item.src}}'
+        dest: '{{item.dest}}'
+        backup: yes
+        mode: preserve
+      with_items:
+        "{{deploy_info[server_name].template|default({})}}"
+      tags:
+        - push
+
     # init cmd for server
     - name: "init {{server_name}}"
       shell:
