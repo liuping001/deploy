@@ -23,16 +23,16 @@ init_cmd|运行指令|
 crontab|安装定时任务|state、name、minute、hour、day、month、weekday、job
 supervisor_conf|指定supervisor所使用的配置文件|
 ### 以下列出了server的所有行为以及其对应的属性。
-action|属性
--|-
-push|copy_file,template
-init|init_cmd
-start|
-stop|
-restart|
-status|
-install|crontab
-remove|crontab
+action|属性|描述
+-|-|-
+push|copy_file,template|copy服务相关文件到目标机
+init|init_cmd|在服务器启动前需要运行的指令
+start||启动服务
+stop||关闭服务
+restart||重启服务
+status||查询服务状态
+install|crontab|安装定时任务
+remove|crontab|移除定时任务
 
 ### 部署基于supervisor的服务
 部署基于supervisor的服务需要使用的属性：
@@ -45,11 +45,11 @@ remove|crontab
 1. copy_file copy普通文件
 2. template 替换包含变量的配置文件
 3. crontab 描述定时任务。
-对于crontab属性有以下规则：
+* 对于crontab属性有以下规则：
   必须定义job属性。
   state只能是install或remove。
   name是一个定时任务的索引关键字，必须定义且唯一。
-  minute、hour、day、month、weekday等属性都是可选的，默认为"*"
+  minute、hour、day、month、weekday等属性都是可选的，默认为"*"。
 
 # 使用
 ### 在server.yml定义部署服务的配置项。
