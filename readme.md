@@ -14,14 +14,14 @@ sudo yum install ansible -y
 ```
 
 # deploy详细介绍
-### 服务属性列表（所有属性类型都为数组）。
-属性|作用|数组元素的子属性
+### 服务属性列表
+属性|作用|子属性
 -|-|-
 copy_file|copy文件到目标机器|src、dest
 template|替换配置文件中的变量并copy到目标机器|src、dest
 init_cmd|运行指令|
 crontab|安装定时任务|state、name、minute、hour、day、month、weekday、job
-
+supervisor_conf|指定supervisor所使用的配置文件|
 ### 以下列出了server的所有行为以及其对应的属性。
 action|属性
 -|-
@@ -46,8 +46,8 @@ remove|crontab
 2. template 替换包含变量的配置文件
 3. crontab 描述定时任务。
 对于crontab属性有以下规则：
-  必须定义job属性
-  state只能是install或remove
+  必须定义job属性。
+  state只能是install或remove。
   name是一个定时任务的索引关键字，必须定义且唯一。
   minute、hour、day、month、weekday等属性都是可选的，默认为"*"
 
