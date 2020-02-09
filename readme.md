@@ -44,12 +44,9 @@ remove|crontab|移除定时任务
 部署crontab定时任务需要使用的属性：
 1. copy_file copy普通文件
 2. template 替换包含变量的配置文件
-3. crontab 描述定时任务。
-* 对于crontab属性有以下规则：
-  必须定义job属性。
-  state只能是install或remove。
-  name是一个定时任务的索引关键字，必须定义且唯一。
-  minute、hour、day、month、weekday等属性都是可选的，默认为"*"。
+3. crontab 描述定时任务。  
+
+对于crontab属性有以下规则：必须定义job属性。 state只能是install或remove。name是一个定时任务的索引关键字，必须定义且唯一。minute、hour、day、month、weekday等属性都是可选的，默认为"*"。 
 
 # 使用
 ### 在server.yml定义部署服务的配置项。
