@@ -27,10 +27,10 @@ action|属性|描述
 -|-|-
 push|copy_file,template|copy服务相关文件到目标机
 init|init_cmd|在服务器启动前需要运行的指令
-start||启动服务
-stop||关闭服务
-restart||重启服务
-status||查询服务状态
+start||启动服务 (supervisorctl start)
+stop||关闭服务 (supervisorctl stop)
+restart||重启服务 (supervisorctl update 、supervisorctl restart)
+status||查询服务状态 (supervisorctl status)
 install|crontab|安装定时任务
 remove|crontab|移除定时任务
 
