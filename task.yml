@@ -7,7 +7,7 @@
     - "{{server_define_file}}"
   tasks:
     # push server files
-    - name: "push {{server_name}} copy"
+    - name: "push {{server_name}} copy file"
       copy:
         src: '{{work_dir}}/{{item.src}}'
         dest: '{{item.dest}}'
@@ -17,6 +17,19 @@
         "{{deploy_info[server_name].copy_file|default({})}}"
       tags:
         - push
+
+    - name: "push {{server_name}} copy file curt"
+      copy:
+        src: '{{work_dir}}/{{item.0.src}}/{{item.1}}'
+        dest: '{{item.0.dest}}'
+        backup: yes
+        mode: preserve
+      with_subelements:
+        - "{{deploy_info[server_name].copy_file_curt|default({})}}"
+        - files
+      tags:
+        - push
+        - push_curt
 
     # push server files
     - name: "push {{server_name}} template"

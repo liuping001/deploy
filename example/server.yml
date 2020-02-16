@@ -18,6 +18,11 @@ deploy_info:
     copy_file:
       - src: example/test.py
         dest: /tmp/server_2.py
+    copy_file_curt:
+      - src: example/
+        dest: /tmp/
+        files:
+          - test.py
     init_cmd:
       - "mkdir -p /tmp/server_2_log"
     supervisor_conf: /etc/supervisord.conf
