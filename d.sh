@@ -19,6 +19,10 @@ usage()
 
 }
 CUR_DIR=`pwd`
+if [ "$3" = "list" ];then
+    ansible localhost -m debug --extra-vars "@${CUR_DIR}/$1" -a "msg={{ deploy_info.keys()|list}}" 2>&1 |grep -v -P 'PLAY|WARNING|localhost|\[|\]|\}'
+    exit
+fi
 if [ $# -lt 4 ];then
     usage
     exit
