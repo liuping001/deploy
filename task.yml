@@ -21,7 +21,7 @@
     - name: "push {{server_name}} copy file curt"
       copy:
         src: '{{work_dir}}/{{item.0.src}}/{{item.1}}'
-        dest: '{{item.0.dest}}'
+        dest: '{{item.0.dest}}/'
         backup: yes
         mode: preserve
       with_subelements:
