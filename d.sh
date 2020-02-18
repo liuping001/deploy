@@ -18,17 +18,38 @@ usage()
     echo "    deploy server.yml host.txt [remove]   # crontab"
 
 }
+
 CUR_DIR=`pwd`
-if [ "$3" = "list" ];then
-    ansible localhost -m debug --extra-vars "@${CUR_DIR}/$1" -a "msg={{ deploy_info.keys()|list}}" 2>&1 |grep -o -P "\".*\""|grep -v "\"msg\""
+patten=".*"
+if [ "$4" = "-P" ];then
+    patten=$5
+fi
+
+if [ $# -lt 3 ];then
+    usage
     exit
 fi
+if [ "$3" = "list" ];then
+    ansible localhost -m debug --extra-vars "@${CUR_DIR}/$1" -a "msg={{ deploy_info.keys()|list}}" 2>&1 |grep -o -P "\".*\""|grep -v "\"msg\"" |grep -P "$patten"
+    exit
+fi
+
 if [ $# -lt 4 ];then
     usage
     exit
 fi
 
-for server in ${@:4};
+if [ "$4" = "-P" ];then
+    if [ $# -lt 5 ];then
+        usage
+        exit
+   fi
+   server_list=`ansible localhost -m debug --extra-vars "@${CUR_DIR}/$1" -a "msg={{ deploy_info.keys()|list}}" 2>&1 |grep -o -P "\".*\""|grep -v "\"msg\"" |grep -P "$patten"`
+else
+   server_list=${@:4}
+fi
+
+for server in $server_list;
 do
     # echo $server
     export ANSIBLE_FORCE_COLOR=true
