@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 mkdir -p ~/.bin
 cp d.sh ~/.bin/deploy
 cp task.yml ~/.bin/task.yml
