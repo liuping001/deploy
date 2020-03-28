@@ -19,7 +19,21 @@ usage()
 
 }
 
-CUR_DIR=`pwd`
+# 获取当前工程根目录
+WORK_DIR=`pwd`
+find_work_dir_count=10
+while [ ! -d $WORK_DIR/../deploy ]
+do
+    WORK_DIR=${WORK_DIR}/..
+    echo $WORK_DIR
+    ((find_work_dir_count--))
+    if [ $find_work_dir_count == 0 ];then
+        echo "not find dir deploy/"
+        exit
+    fi
+done
+echo "current work dir is [$WORK_DIR]"
+
 patten=".*"
 if [ "$4" = "-P" ];then
     patten=$5
@@ -30,7 +44,7 @@ if [ $# -lt 3 ];then
     exit
 fi
 if [ "$3" = "list" ];then
-    ansible localhost -m debug --extra-vars "@${CUR_DIR}/$1" -a "msg={{ deploy_info.keys()|list}}" 2>&1 |grep -o -P "\".*\""|grep -v "\"msg\"" |grep -P "$patten"
+    ansible localhost -m debug --extra-vars "@${WORK_DIR}/$1" -a "msg={{ deploy_info.keys()|list}}" 2>&1 |grep -o -P "\".*\""|grep -v "\"msg\"" |grep -P "$patten"
     exit
 fi
 
@@ -44,7 +58,7 @@ if [ "$4" = "-P" ];then
         usage
         exit
    fi
-   server_list=`ansible localhost -m debug --extra-vars "@${CUR_DIR}/$1" -a "msg={{ deploy_info.keys()|list}}" 2>&1 |grep -o -P "\".*\""|grep -v "\"msg\"" |grep -P "$patten"`
+   server_list=`ansible localhost -m debug --extra-vars "@${WORK_DIR}/$1" -a "msg={{ deploy_info.keys()|list}}" 2>&1 |grep -o -P "\".*\""|grep -v "\"msg\"" |grep -P "$patten"`
 else
    server_list=${@:4}
 fi
@@ -53,6 +67,6 @@ for server in $server_list;
 do
     # echo $server
     export ANSIBLE_FORCE_COLOR=true
-    ansible-playbook -i ${CUR_DIR}/$2 ~/.bin/task.yml --tags="$3" -e "server_name=$server server_define_file=${CUR_DIR}/$1 work_dir=${CUR_DIR}" |grep -v -P 'PLAY|WARN'
+    ansible-playbook -i ${CUR_DIR}/$2 ~/.bin/task.yml --tags="$3" -e "server_name=$server server_define_file=${WORK_DIR}/$1 work_dir=${WORK_DIR}" |grep -v -P 'PLAY|WARN'
 done;
  
