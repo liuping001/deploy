@@ -22,7 +22,7 @@ usage()
 # 获取当前工程根目录
 WORK_DIR=`pwd`
 find_work_dir_count=10
-while [ ! -d $WORK_DIR/../deploy ]
+while [ ! -d $WORK_DIR/deploy ]
 do
     WORK_DIR=${WORK_DIR}/..
     echo $WORK_DIR
@@ -32,6 +32,7 @@ do
         exit
     fi
 done
+WORK_DIR=${WORK_DIR}/deploy
 echo "current work dir is [$WORK_DIR]"
 
 patten=".*"
