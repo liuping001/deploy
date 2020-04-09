@@ -19,6 +19,11 @@ usage()
 
 }
 
+if [ $# -lt 3 ];then
+    usage
+    exit
+fi
+
 # 获取当前工程根目录
 WORK_DIR=`pwd`
 find_work_dir_count=10
@@ -38,11 +43,6 @@ echo "current work dir is [$WORK_DIR]"
 patten=".*"
 if [ "$4" = "-P" ];then
     patten=$5
-fi
-
-if [ $# -lt 3 ];then
-    usage
-    exit
 fi
 if [ "$3" = "list" ];then
     ansible localhost -m debug --extra-vars "@${WORK_DIR}/$1" -a "msg={{ deploy_info.keys()|list}}" 2>&1 |grep -o -P "\".*\""|grep -v "\"msg\"" |grep -P "$patten"
