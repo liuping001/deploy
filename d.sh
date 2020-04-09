@@ -68,6 +68,6 @@ for server in $server_list;
 do
     # echo $server
     export ANSIBLE_FORCE_COLOR=true
-    ansible-playbook -i ${CUR_DIR}/$2 ~/.bin/task.yml --tags="$3" -e "server_name=$server server_define_file=${WORK_DIR}/$1 work_dir=${WORK_DIR}" |grep -v -P 'PLAY|WARN'
+    ansible-playbook -i ${WORK_DIR}/$2 ~/.bin/task.yml --tags="$3" -e "server_name=$server server_define_file=${WORK_DIR}/$1 work_dir=${WORK_DIR}" |grep -v -P 'PLAY|WARN'
 done;
  
