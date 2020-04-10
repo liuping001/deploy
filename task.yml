@@ -54,12 +54,16 @@
         - init
         - init_cmd
 
+    ###############################################
+    # supervisor: start stop restart status
+    ###############################################
     # start server
     - name: "start {{server_name}}"
       supervisorctl:
         name: "{{server_name}}"
         state: started
         config: "{{deploy_info[server_name].supervisor_conf}}"
+      when: deploy_info[server_name].start is undefined 
       tags:
         - start
 
@@ -69,6 +73,7 @@
         name: "{{server_name}}"
         state: stopped
         config: "{{deploy_info[server_name].supervisor_conf}}"
+      when: deploy_info[server_name].stop is undefined 
       tags:
         - stop
 
@@ -79,6 +84,7 @@
         name: "{{server_name}}"
         state: restarted
         config: "{{deploy_info[server_name].supervisor_conf}}"
+      when: deploy_info[server_name].restart is undefined 
       tags:
         - restart
 
@@ -88,11 +94,86 @@
         cmd: 'supervisorctl -c {{deploy_info[server_name].supervisor_conf}} status {{server_name}}'
       register: ret
       failed_when: "ret.stderr != ''"
+      when: deploy_info[server_name].status is undefined       
       tags:
         - status
     - name: "status {{server_name}} print"
       debug:
         var: ret.stdout
+      when: deploy_info[server_name].status is undefined         
+      tags:
+        - status
+
+    ###############################################
+    # shell: start stop restart status
+    ###############################################
+    # start server
+    - name: "start {{server_name}}"
+      shell:
+        cmd: '{{deploy_info[server_name].start}}'
+      register: ret
+      when: deploy_info[server_name].start is defined
+      tags:
+        - start
+    - name: "start {{server_name}} print"
+      debug: 
+        msg:
+         - "{{ret.stdout.split('\n')}}"
+         - "{{ret.stderr.split('\n')}}"
+      when: deploy_info[server_name].start is defined
+      tags:
+        - start
+
+    # stop server
+    - name: "stop {{server_name}}"
+      shell:
+        cmd: '{{deploy_info[server_name].stop}}'
+      register: ret
+      failed_when: "ret.stderr != ''"
+      when: deploy_info[server_name].stop is defined
+      tags:
+        - stop
+    - name: "stop {{server_name}} print"
+      debug: 
+        msg:
+         - "{{ret.stdout.split('\n')}}"
+         - "{{ret.stderr.split('\n')}}"
+      when: deploy_info[server_name].stop is defined         
+      tags:
+        - stop
+
+    # restart server
+    - name: "restart {{server_name}}"
+      shell:
+        cmd: '{{deploy_info[server_name].restart}}'
+      register: ret
+      when: deploy_info[server_name].restart is defined        
+      tags:
+        - restart
+    - name: "restart {{server_name}} print"
+      debug: 
+        msg:
+         - "{{ret.stdout.split('\n')}}"
+         - "{{ret.stderr.split('\n')}}"
+      when: deploy_info[server_name].restart is defined
+      tags:
+        - restart
+
+    # status server
+    - name: "status {{server_name}}"
+      shell:
+        cmd: '{{deploy_info[server_name].status}}'
+      register: ret
+      failed_when: "ret.stderr != ''"
+      when: deploy_info[server_name].status is defined
+      tags:
+        - status
+    - name: "status {{server_name}} print"
+      debug:
+        msg:
+         - "{{ret.stdout.split('\n')}}"
+         - "{{ret.stderr.split('\n')}}"
+      when: deploy_info[server_name].status is defined
       tags:
         - status
 

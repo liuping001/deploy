@@ -25,7 +25,7 @@ deploy_info:
           - test.py
     init_cmd:
       - "mkdir -p /tmp/server_2_log"
-    supervisor_conf: /etc/supervisord.conf
+    start: "cd /tmp && nohup python server_2.py &"
 
 # 安装定时任务
   server3:
