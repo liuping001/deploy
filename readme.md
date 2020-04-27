@@ -75,6 +75,20 @@ status||查询服务状态 (supervisorctl status)
 install|crontab|安装定时任务
 remove|crontab|移除定时任务
 
+### 自定义service.sh脚本（代替supervisor）来启动服务
+```
+deploy_info:
+  #普通服务
+  server1:
+    copy_file: # 支持数组
+      - src: /tmp/server_1
+        dest: /tmp/server_1
+      - src: /tmp/service.sh
+        dest: /tmp/service.sh
+    start: "cd /tmp/ && service.sh start server_1"
+    stop: "cd /tmp/ && service.sh stop server_1"
+    status: "cd /tmp/ && service.sh status server_1"
+```
 ### 部署基于supervisor的服务
 部署基于supervisor的服务需要使用的属性：
 1. copy_file copy普通文件
