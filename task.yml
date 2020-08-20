@@ -16,6 +16,18 @@
       copy:
         src: '{{work_dir}}/{{item.src}}'
         dest: '{{item.dest}}'
+        backup: no
+        mode: preserve
+      with_items:
+        "{{vars[server_name].cp2|default({})}}"
+      tags:
+        - cp2
+        - copy_all
+
+    - name: "push {{server_name}} copy file"
+      copy:
+        src: '{{work_dir}}/{{item.src}}'
+        dest: '{{item.dest}}'
         backup: yes
         mode: preserve
       with_items:
@@ -23,6 +35,38 @@
       tags:
         - cp2_b
         - copy_all
+    - name: "cp_b check dest dir"
+      file:
+        path: '{{item.dest}}/'
+        state: directory
+      with_items:
+        - "{{vars[server_name].cp|default({})}}"
+      tags:
+        - cp
+        - copy_all
+    - name: "cp check dest dir"
+      file:
+        path: '{{item.dest}}/'
+        state: directory
+      with_items:
+        - "{{vars[server_name].cp_b|default({})}}"
+      tags:
+        - cp_b
+        - copy_all
+
+    - name: "push {{server_name}} copy file curt"
+      copy:
+        src: '{{work_dir}}/{{item.0.src}}/{{item.1}}/'
+        dest: '{{item.0.dest}}/{{item.1}}'
+        backup: no
+        mode: preserve
+      with_subelements:
+        - "{{vars[server_name].cp|default({})}}"
+        - files
+      tags:
+        - cp
+        - copy_all
+
 
     - name: "push {{server_name}} copy file curt"
       copy:
@@ -68,7 +112,7 @@
         name: "{{server_name}}"
         state: started
         config: "{{vars[server_name].supervisor_conf}}"
-      when: vars[server_name].start is undefined 
+      when: vars[server_name].start is undefined
       tags:
         - start
 
@@ -78,7 +122,7 @@
         name: "{{server_name}}"
         state: stopped
         config: "{{vars[server_name].supervisor_conf}}"
-      when: vars[server_name].stop is undefined 
+      when: vars[server_name].stop is undefined
       tags:
         - stop
 
@@ -89,7 +133,7 @@
         name: "{{server_name}}"
         state: restarted
         config: "{{vars[server_name].supervisor_conf}}"
-      when: vars[server_name].restart is undefined 
+      when: vars[server_name].restart is undefined
       tags:
         - restart
 
@@ -99,43 +143,19 @@
         cmd: 'supervisorctl -c {{vars[server_name].supervisor_conf}} status {{server_name}}'
       register: ret
       failed_when: "ret.stderr != ''"
-      when: vars[server_name].status is undefined       
+      when: vars[server_name].status is undefined
       tags:
         - status
     - name: "status {{server_name}} print"
       debug:
         var: ret.stdout
-      when: vars[server_name].status is undefined         
+      when: vars[server_name].status is undefined
       tags:
         - status
 
     ###############################################
     # for: remote build
     ###############################################
-    - name: "push {{server_name}} copy file"
-      copy:
-        src: '{{work_dir}}/{{item.src}}'
-        dest: '{{item.dest}}'
-        backup: no
-        mode: preserve
-      with_items:
-        "{{vars[server_name].cp2|default({})}}"
-      tags:
-        - cp2
-        - copy_all
-
-    - name: "push {{server_name}} copy file curt"
-      copy:
-        src: '{{work_dir}}/{{item.0.src}}/{{item.1}}/'
-        dest: '{{item.0.dest}}/{{item.1}}'
-        backup: no
-        mode: preserve
-      with_subelements:
-        - "{{vars[server_name].cp|default({})}}"
-        - files
-      tags:
-        - cp
-        - copy_all
 
     - name: "fetch {{server_name}} file"
       fetch:
@@ -162,10 +182,10 @@
       tags:
         - start
     - name: "start {{server_name}} print"
-      debug: 
+      debug:
         msg:
-         - "{{ret.stdout.split('\n')}}"
-         - "{{ret.stderr.split('\n')}}"
+          - "{{ret.stdout.split('\n')}}"
+          - "{{ret.stderr.split('\n')}}"
       when: vars[server_name].start is defined
       tags:
         - start
@@ -180,11 +200,11 @@
       tags:
         - stop
     - name: "stop {{server_name}} print"
-      debug: 
+      debug:
         msg:
-         - "{{ret.stdout.split('\n')}}"
-         - "{{ret.stderr.split('\n')}}"
-      when: vars[server_name].stop is defined         
+          - "{{ret.stdout.split('\n')}}"
+          - "{{ret.stderr.split('\n')}}"
+      when: vars[server_name].stop is defined
       tags:
         - stop
 
@@ -193,14 +213,14 @@
       shell:
         cmd: '{{vars[server_name].restart}}'
       register: ret
-      when: vars[server_name].restart is defined        
+      when: vars[server_name].restart is defined
       tags:
         - restart
     - name: "restart {{server_name}} print"
-      debug: 
+      debug:
         msg:
-         - "{{ret.stdout.split('\n')}}"
-         - "{{ret.stderr.split('\n')}}"
+          - "{{ret.stdout.split('\n')}}"
+          - "{{ret.stderr.split('\n')}}"
       when: vars[server_name].restart is defined
       tags:
         - restart
@@ -217,8 +237,8 @@
     - name: "status {{server_name}} print"
       debug:
         msg:
-         - "{{ret.stdout.split('\n')}}"
-         - "{{ret.stderr.split('\n')}}"
+          - "{{ret.stdout.split('\n')}}"
+          - "{{ret.stderr.split('\n')}}"
       when: vars[server_name].status is defined
       tags:
         - status
