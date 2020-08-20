@@ -1,8 +1,8 @@
 # 简介
 这是一个通用的服务器部署工具,使用的方式如example所示：
-1. 通过在server.yml配置文件中描述每个服务的部署行为，如copy_file, template, cmd
+1. 通过在server.yml配置文件中描述每个服务的部署行为，如cp, template, cmd
 2. 通过在host.ini文件中描述每个服务需要部署到那些机器上
-3. 使用"run.sh action1,action2 server1,server2 [server.yml] [host.ini]" 进行部署。例如 "d.sh cp server1 server1.yml host.ini"
+3. 使用"run.sh action1,action2 server1,server2 [server.yml] [host.ini]" 进行部署。例如 "run.sh cp server1 server1.yml host.ini"
 
 # 安装依赖
 ```shell script
@@ -17,16 +17,16 @@ source ~/.bashrc
 ### 在server.yml定义部署服务的配置项。
 例如：
 ```yaml
-deploy_info:
+  # 普通服务
   server1:
     cp: # 支持数组
       - src: /tmp/test.py
         dest: /tmp/server_1.py
     cmd: # 支持数组
       - "mkdir -p /tmp/server_1_log"
-    supervisor_conf: /etc/supervisord.conf
+    
   #定时任务
-  server3:
+  server2:
     cp:
       - src: example/hello.sh
         dest: /tmp/hello.sh
@@ -48,26 +48,24 @@ deploy_info:
 
 ### 部署例子
 ```shell script
-    run.sh cp server,server2
-    run.sh cp server,server2 server_all.yml
-    run.sh cp,cmd hello server_hello.yml host_hello.ini
+run.sh cp server1,server2 server.yml host.ini
+run.sh cp,cmd server1 server.yml host.ini
+run.sh cp,crontab server2 server.yml host.ini
 ```
 # deploy详细介绍
 ### 服务属性列表
 属性|作用|子属性
 -|-|-
-cp2|copy文件到目标机器|src、dest
 cp|copy文件到目标机(指定目录)|src、dest、files
-cp2_b|copy文件到目标机器|src、dest
 cp_b|copy文件到目标机(指定目录)|src、dest、files
+cp2|copy文件到目标机器|src、dest
+cp2_b|copy文件到目标机器|src、dest
 template|替换配置文件中的变量并copy到目标机器|src、dest
 cmd|运行指令|
 crontab|安装定时任务|state、name、minute、hour、day、month、weekday、job
-supervisor_conf|指定supervisor所使用的配置文件|
 
 ### 自定义service.sh脚本（代替supervisor）来启动服务
 ```
-deploy_info:
   #普通服务
   server1:
     copy_file: # 支持数组
