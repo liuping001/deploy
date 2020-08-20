@@ -1,8 +1,8 @@
 # 简介
 这是一个通用的服务器部署工具,使用的方式如example所示：
-1. 通过在server.yml配置文件中描述每个服务的部署行为，如copy_file, template, init_cmd
+1. 通过在server.yml配置文件中描述每个服务的部署行为，如copy_file, template, cmd
 2. 通过在host.ini文件中描述每个服务需要部署到那些机器上
-3. 使用"d.sh server.yml host.ini action server_list" 进行部署。例如 "d.sh example/server.yml example/host.ini push server1"
+3. 使用"run.sh action1,action2 server1,server2 [server.yml] [host.ini]" 进行部署。例如 "d.sh cp server1 server1.yml host.ini"
 
 # 安装依赖
 ```shell script
@@ -18,17 +18,16 @@ source ~/.bashrc
 例如：
 ```yaml
 deploy_info:
-  #普通服务
   server1:
-    copy_file: # 支持数组
+    cp: # 支持数组
       - src: /tmp/test.py
         dest: /tmp/server_1.py
-    init_cmd: # 支持数组
+    cmd: # 支持数组
       - "mkdir -p /tmp/server_1_log"
     supervisor_conf: /etc/supervisord.conf
   #定时任务
   server3:
-    copy_file:
+    cp:
       - src: example/hello.sh
         dest: /tmp/hello.sh
     crontab:
@@ -49,31 +48,22 @@ deploy_info:
 
 ### 部署例子
 ```shell script
-deploy example/server.yml example/host.ini push server1 server2 #push 启动server1、server2需要的文件
-deploy example/server.yml example/host.ini init_cmd server1 server2 # init cmd
-deploy example/server.yml example/host.ini start server1 server2 #启动 server1、server2
+    run.sh cp server,server2
+    run.sh cp server,server2 server_all.yml
+    run.sh cp,cmd hello server_hello.yml host_hello.ini
 ```
 # deploy详细介绍
 ### 服务属性列表
 属性|作用|子属性
 -|-|-
-copy_file|copy文件到目标机器|src、dest
-copy_file_curt|copy文件到目标机(指定目录)|src、dest、files
+cp2|copy文件到目标机器|src、dest
+cp|copy文件到目标机(指定目录)|src、dest、files
+cp2_b|copy文件到目标机器|src、dest
+cp_b|copy文件到目标机(指定目录)|src、dest、files
 template|替换配置文件中的变量并copy到目标机器|src、dest
-init_cmd|运行指令|
+cmd|运行指令|
 crontab|安装定时任务|state、name、minute、hour、day、month、weekday、job
 supervisor_conf|指定supervisor所使用的配置文件|
-### 以下列出了server的所有行为以及其对应的属性。
-action|属性|描述
--|-|-
-push|copy_file,template|copy服务相关文件到目标机
-init|init_cmd|在服务器启动前需要运行的指令
-start||启动服务 (supervisorctl start)
-stop||关闭服务 (supervisorctl stop)
-restart||重启服务 (supervisorctl update 、supervisorctl restart)
-status||查询服务状态 (supervisorctl status)
-install|crontab|安装定时任务
-remove|crontab|移除定时任务
 
 ### 自定义service.sh脚本（代替supervisor）来启动服务
 ```
@@ -102,5 +92,6 @@ deploy_info:
 3. crontab 描述定时任务。  
 
 对于crontab属性有以下规则：必须定义job属性。 state只能是install或remove。name是一个定时任务的索引关键字，必须定义且唯一。minute、hour、day、month、weekday等属性都是可选的，默认为"*"。 
+
 
 
