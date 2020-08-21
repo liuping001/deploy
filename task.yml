@@ -3,7 +3,9 @@
 #ansible-playbook -i host.txt task.yml --tags="stop" -e "server_name=server2 server_define_file=server.yml"
 - hosts: "{{server_name}}"
   gather_facts: no
-  vars_files: "{{server_define_file}}"
+  vars_files: 
+    - "{{server_define_file}}"
+    - ~/.bin/key_value.yml
   tasks:
     # - include_vars:
     #     file: "{{server_define_file}}"
@@ -31,10 +33,10 @@
         backup: yes
         mode: preserve
       with_items:
-        "{{vars[server_name].cp2_b|default({})}}"
+        "{{vars[server_name].cp2|default({})}}"
       tags:
         - cp2_b
-        - copy_all
+        - copy_all_b
     - name: "cp_b check dest dir"
       file:
         path: '{{item.dest}}/'
@@ -49,10 +51,10 @@
         path: '{{item.dest}}/'
         state: directory
       with_items:
-        - "{{vars[server_name].cp_b|default({})}}"
+        - "{{vars[server_name].cp|default({})}}"
       tags:
         - cp_b
-        - copy_all
+        - copy_all_b
 
     - name: "push {{server_name}} copy file curt"
       copy:
@@ -75,13 +77,23 @@
         backup: yes
         mode: preserve
       with_subelements:
-        - "{{vars[server_name].cp_b|default({})}}"
+        - "{{vars[server_name].cp|default({})}}"
         - files
       tags:
         - cp_b
-        - copy_all
+        - copy_all_b
 
     # push server files
+    - name: "push {{server_name}} template"
+      template:
+        src: '{{work_dir}}/{{item.src}}'
+        dest: '{{item.dest}}'
+        mode: preserve
+      with_items:
+        "{{vars[server_name].cp_t|default({})}}"
+      tags:
+        - cp_t
+        - copy_all
     - name: "push {{server_name}} template"
       template:
         src: '{{work_dir}}/{{item.src}}'
@@ -89,9 +101,10 @@
         backup: yes
         mode: preserve
       with_items:
-        "{{vars[server_name].template|default({})}}"
+        "{{vars[server_name].cp_t|default({})}}"
       tags:
-        - tl
+        - cp_t_b
+        - copy_all_b
 
     # init cmd for server
     - name: "init {{server_name}}"

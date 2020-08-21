@@ -10,6 +10,7 @@ fi
 cp d.sh ~/.bin/deploy
 cp task.yml ~/.bin/task.yml
 cp run.sh ~/.bin/run.sh
+touch ~/.bin/key_value.yml
 chmod +x ~/.bin/deploy
 
 source ~/.bashrc
