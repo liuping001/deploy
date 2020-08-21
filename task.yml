@@ -24,7 +24,7 @@
         "{{vars[server_name].cp2|default({})}}"
       tags:
         - cp2
-        - copy_all
+        - cp_all
 
     - name: "push {{server_name}} copy file"
       copy:
@@ -36,25 +36,25 @@
         "{{vars[server_name].cp2|default({})}}"
       tags:
         - cp2_b
-        - copy_all_b
+        - cp_all_b
+    - name: "check dest dir"
+      file:
+        path: '{{item.dest}}/'
+        state: directory
+      with_items:
+        "{{vars[server_name].cp|default({})}}"
+      tags:
+        - cp
+        - cp_all
     - name: "cp_b check dest dir"
       file:
         path: '{{item.dest}}/'
         state: directory
       with_items:
-        - "{{vars[server_name].cp|default({})}}"
-      tags:
-        - cp
-        - copy_all
-    - name: "cp check dest dir"
-      file:
-        path: '{{item.dest}}/'
-        state: directory
-      with_items:
-        - "{{vars[server_name].cp|default({})}}"
+        "{{vars[server_name].cp|default({})}}"
       tags:
         - cp_b
-        - copy_all_b
+        - cp_all_b
 
     - name: "push {{server_name}} copy file curt"
       copy:
@@ -67,7 +67,7 @@
         - files
       tags:
         - cp
-        - copy_all
+        - cp_all
 
 
     - name: "push {{server_name}} copy file curt"
@@ -81,7 +81,7 @@
         - files
       tags:
         - cp_b
-        - copy_all_b
+        - cp_all_b
 
     # push server files
     - name: "push {{server_name}} template"
@@ -93,7 +93,7 @@
         "{{vars[server_name].cp_t|default({})}}"
       tags:
         - cp_t
-        - copy_all
+        - cp_all
     - name: "push {{server_name}} template"
       template:
         src: '{{work_dir}}/{{item.src}}'
@@ -104,7 +104,7 @@
         "{{vars[server_name].cp_t|default({})}}"
       tags:
         - cp_t_b
-        - copy_all_b
+        - cp_all_b
 
     # init cmd for server
     - name: "init {{server_name}}"
