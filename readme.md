@@ -64,7 +64,7 @@ template|替换配置文件中的变量并copy到目标机器|src、dest
 cmd|运行指令|
 crontab|安装定时任务|state、name、minute、hour、day、month、weekday、job
 
-### 自定义service.sh脚本（代替supervisor）来启动服务
+### 自定义service.sh脚本来启动服务
 ```
   #普通服务
   server1:
@@ -77,11 +77,6 @@ crontab|安装定时任务|state、name、minute、hour、day、month、weekday�
     stop: "cd /tmp/ && service.sh stop server_1"
     status: "cd /tmp/ && service.sh status server_1"
 ```
-### 部署基于supervisor的服务
-部署基于supervisor的服务需要使用的属性：
-1. copy_file copy普通文件
-2. template 替换包含变量的配置文件
-3. supervisor_conf 指定supervisor的配置文件
 
 ### 部署crontab定时任务
 部署crontab定时任务需要使用的属性：
