@@ -2,7 +2,7 @@
 这是一个通用的服务器部署工具,使用的方式如example所示：
 1. 通过在server.yml配置文件中描述每个服务的部署行为，如cp, template, cmd
 2. 通过在host.ini文件中描述每个服务需要部署到那些机器上
-3. 使用"run.sh action1,action2 server1,server2 [server.yml] [host.ini]" 进行部署。例如 "run.sh cp server1 server1.yml host.ini"
+3. 使用"run.sh action1,action2 server1,server2 [inventory]" 进行部署。例如 "run.sh server1 cp inventory"
 
 # 安装依赖
 ```shell script
@@ -48,20 +48,19 @@ source ~/.bashrc
 
 ### 部署例子
 ```shell script
-run.sh cp server1,server2 server.yml host.ini
+run.sh cp server1,server2 server.yml inventory
 run.sh cp,cmd server1 server.yml host.ini
 run.sh cp,crontab server2 server.yml host.ini
 ```
 # deploy详细介绍
 ### 服务属性列表
-属性|作用|子属性
--|-|-
-cp|copy文件到目标机(指定目录)|src、dest、files
-cp_b|copy文件到目标机(指定目录)|src、dest、files
-cp2|copy文件到目标机器|src、dest
-cp2_b|copy文件到目标机器|src、dest
-template|替换配置文件中的变量并copy到目标机器|src、dest
-cmd|运行指令|
+
+属性|作用|子属性  
+-|-|- 
+cp|copy文件到目标机器|src、dest
+cp2|copy文件到目标机(指定目录)|src、dest、files
+cp_t|template替换配置文件中的变量并copy到目标机器|src、dest  
+cmd|运行指令|shell命令
 crontab|安装定时任务|state、name、minute、hour、day、month、weekday、job
 
 ### 自定义service.sh脚本来启动服务

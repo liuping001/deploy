@@ -1,0 +1,13 @@
+localhost ansible_connection=local
+
+[init_host]
+localhost
+
+[server1]
+localhost
+
+[server2]
+localhost
+
+[server3]
+localhost

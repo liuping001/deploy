@@ -1,90 +1,47 @@
 ---
 #https://stackoverflow.com/questions/41631770/get-dict-value-from-variable-key-in-ansible/41631874#41631874
-#ansible-playbook -i host.txt task.yml --tags="stop" -e "server_name=server2 server_define_file=server.yml"
+#ansible-playbook -i inventory task.yml --tags="stop" -e "server_name=server2"
 - hosts: "{{server_name}}"
   gather_facts: no
-  vars_files: 
-    - "{{server_define_file}}"
-    - ~/.bin/key_value.yml
   tasks:
-    # - include_vars:
-    #     file: "{{server_define_file}}"
-    #     name: deploy_info    
-    #   tags:
-    #   - always
-
     # push server files
-    - name: "push {{server_name}} copy file"
+    - name: "{{server_name}}: copy file"
       copy:
         src: '{{work_dir}}/{{item.src}}'
         dest: '{{item.dest}}'
         backup: no
         mode: preserve
       with_items:
-        "{{vars[server_name].cp2|default({})}}"
-      tags:
-        - cp2
-        - cp_all
-
-    - name: "push {{server_name}} copy file"
-      copy:
-        src: '{{work_dir}}/{{item.src}}'
-        dest: '{{item.dest}}'
-        backup: yes
-        mode: preserve
-      with_items:
-        "{{vars[server_name].cp2|default({})}}"
-      tags:
-        - cp2_b
-        - cp_all_b
-    - name: "check dest dir"
-      file:
-        path: '{{item.dest}}/'
-        state: directory
-      with_items:
         "{{vars[server_name].cp|default({})}}"
       tags:
         - cp
-        - cp_all
-    - name: "cp_b check dest dir"
+        - push
+
+    - name: "{{server_name}}: check dest dir"
       file:
         path: '{{item.dest}}/'
         state: directory
       with_items:
-        "{{vars[server_name].cp|default({})}}"
+        "{{vars[server_name].cp2|default({})}}"
       tags:
-        - cp_b
-        - cp_all_b
+        - cp2
+        - push
 
-    - name: "push {{server_name}} copy file curt"
+    - name: "{{server_name}}: copy file curt"
       copy:
         src: '{{work_dir}}/{{item.0.src}}/{{item.1}}/'
         dest: '{{item.0.dest}}/{{item.1}}'
         backup: no
         mode: preserve
       with_subelements:
-        - "{{vars[server_name].cp|default({})}}"
+        - "{{vars[server_name].cp2|default({})}}"
         - files
       tags:
-        - cp
-        - cp_all
-
-
-    - name: "push {{server_name}} copy file curt"
-      copy:
-        src: '{{work_dir}}/{{item.0.src}}/{{item.1}}'
-        dest: '{{item.0.dest}}/{{item.1}}'
-        backup: yes
-        mode: preserve
-      with_subelements:
-        - "{{vars[server_name].cp|default({})}}"
-        - files
-      tags:
-        - cp_b
-        - cp_all_b
+        - cp2
+        - push
 
     # push server files
-    - name: "push {{server_name}} template"
+    - name: "{{server_name}}: template file"
       template:
         src: '{{work_dir}}/{{item.src}}'
         dest: '{{item.dest}}'
@@ -93,21 +50,10 @@
         "{{vars[server_name].cp_t|default({})}}"
       tags:
         - cp_t
-        - cp_all
-    - name: "push {{server_name}} template"
-      template:
-        src: '{{work_dir}}/{{item.src}}'
-        dest: '{{item.dest}}'
-        backup: yes
-        mode: preserve
-      with_items:
-        "{{vars[server_name].cp_t|default({})}}"
-      tags:
-        - cp_t_b
-        - cp_all_b
+        - push
 
     # init cmd for server
-    - name: "init {{server_name}}"
+    - name: "{{server_name}}: cmd"
       shell:
         cmd: '{{item}}'
         warn: False
@@ -117,60 +63,10 @@
         - cmd
 
     ###############################################
-    # supervisor: start stop restart status
-    ###############################################
-    # start server
-    - name: "start {{server_name}}"
-      supervisorctl:
-        name: "{{server_name}}"
-        state: started
-        config: "{{vars[server_name].supervisor_conf}}"
-      when: vars[server_name].start is undefined
-      tags:
-        - start
-
-    # stop server
-    - name: "stop {{server_name}}"
-      supervisorctl:
-        name: "{{server_name}}"
-        state: stopped
-        config: "{{vars[server_name].supervisor_conf}}"
-      when: vars[server_name].stop is undefined
-      tags:
-        - stop
-
-
-    # restart server
-    - name: "restart {{server_name}}"
-      supervisorctl:
-        name: "{{server_name}}"
-        state: restarted
-        config: "{{vars[server_name].supervisor_conf}}"
-      when: vars[server_name].restart is undefined
-      tags:
-        - restart
-
-    # status server
-    - name: "status {{server_name}}"
-      shell:
-        cmd: 'supervisorctl -c {{vars[server_name].supervisor_conf}} status {{server_name}}'
-      register: ret
-      failed_when: "ret.stderr != ''"
-      when: vars[server_name].status is undefined
-      tags:
-        - status
-    - name: "status {{server_name}} print"
-      debug:
-        var: ret.stdout
-      when: vars[server_name].status is undefined
-      tags:
-        - status
-
-    ###############################################
     # for: remote build
     ###############################################
 
-    - name: "fetch {{server_name}} file"
+    - name: "{{server_name}}: fetch file"
       fetch:
         src: '{{item.src}}'
         dest: '{{work_dir}}/{{item.dest}}/'
@@ -187,59 +83,28 @@
     # shell: start stop restart status
     ###############################################
     # start server
-    - name: "start {{server_name}}"
+    - name: "{{server_name}}: start"
       shell:
         cmd: '{{vars[server_name].start}}'
-      register: ret
-      when: vars[server_name].start is defined
-      tags:
-        - start
-    - name: "start {{server_name}} print"
-      debug:
-        msg:
-          - "{{ret.stdout.split('\n')}}"
-          - "{{ret.stderr.split('\n')}}"
-      when: vars[server_name].start is defined
       tags:
         - start
 
     # stop server
-    - name: "stop {{server_name}}"
+    - name: "{{server_name}}: stop"
       shell:
         cmd: '{{vars[server_name].stop}}'
-      register: ret
-      failed_when: "ret.stderr != ''"
-      when: vars[server_name].stop is defined
-      tags:
-        - stop
-    - name: "stop {{server_name}} print"
-      debug:
-        msg:
-          - "{{ret.stdout.split('\n')}}"
-          - "{{ret.stderr.split('\n')}}"
-      when: vars[server_name].stop is defined
       tags:
         - stop
 
     # restart server
-    - name: "restart {{server_name}}"
+    - name: "{{server_name}}: restart"
       shell:
         cmd: '{{vars[server_name].restart}}'
-      register: ret
-      when: vars[server_name].restart is defined
-      tags:
-        - restart
-    - name: "restart {{server_name}} print"
-      debug:
-        msg:
-          - "{{ret.stdout.split('\n')}}"
-          - "{{ret.stderr.split('\n')}}"
-      when: vars[server_name].restart is defined
       tags:
         - restart
 
     # status server
-    - name: "status {{server_name}}"
+    - name: "{{server_name}}: status"
       shell:
         cmd: '{{vars[server_name].status}}'
       register: ret
@@ -247,7 +112,7 @@
       when: vars[server_name].status is defined
       tags:
         - status
-    - name: "status {{server_name}} print"
+    - name: "{{server_name}}: status print"
       debug:
         msg:
           - "{{ret.stdout.split('\n')}}"
@@ -256,7 +121,7 @@
       tags:
         - status
 
-    - name: "install cron {{server_name}}"
+    - name: "{{server_name}}: install cron"
       cron:
         name: "{{item.name|default('*')}}"
         minute: "{{item.minute|default('*')}}"
@@ -271,7 +136,7 @@
       tags:
         - install
 
-    - name: "remove cron {{server_name}}"
+    - name: "{{server_name}}: remove cron"
       cron:
         name: "{{item.name|default('*')}}"
         minute: "{{item.minute|default('*')}}"
