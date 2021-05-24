@@ -24,3 +24,5 @@
           dest: ~/.bin/deploy
         - src: task.yml
           dest: ~/.bin/task.yml
+        - src: deploy_vars.yml
+          dest: ~/.deploy_vars.yml

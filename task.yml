@@ -1,8 +1,10 @@
 ---
 #https://stackoverflow.com/questions/41631770/get-dict-value-from-variable-key-in-ansible/41631874#41631874
-#ansible-playbook -i inventory task.yml --tags="stop" -e "server_name=server2"
+#ansible-playbook -i inventory task.yml --tags="stop" -e "server_name=server2 deploy_vars_file=~/.deploy_var.yml"
 - hosts: "{{server_name}}"
   gather_facts: no
+  vars_files:
+    - "{{deploy_vars_file}}"
   tasks:
     # push server files
     - name: "{{server_name}}: copy files"
