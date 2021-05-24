@@ -1,8 +1,8 @@
 # 简介
 这是一个通用的服务器部署工具,使用的方式如example所示：
-1. 通过在server.yml配置文件中描述每个服务的部署行为，如cp, template, cmd
-2. 通过在host.ini文件中描述每个服务需要部署到那些机器上
-3. 使用"run.sh action1,action2 server1,server2 [inventory]" 进行部署。例如 "run.sh server1 cp inventory"
+1. 通过在deploy/test/group_vars/all.yml配置文件中描述每个服务的部署行为，如cp, template, cmd, crontab
+2. 通过在deploy/test/inventory文件中描述每个服务需要部署到那些机器上
+3. 使用"deploy server1,server2 action1,action2" 进行部署。例如 "deploy server1 cp"
 
 # 安装依赖
 ```shell script
@@ -10,11 +10,12 @@ sudo yum install ansible -y
 ```
 # 安装deploy
 ```
-./install.sh
+ansible-playbook -i "localhost," -c local install.yml 
 source ~/.bashrc
 ```
 # 使用
-### 在server.yml定义部署服务的配置项。
+### 定义服务
+* 在all.yml定义部署服务的配置项。
 例如：
 ```yaml
   # 普通服务
@@ -33,11 +34,21 @@ source ~/.bashrc
     crontab:
       - {state: install, name: hello, minute: 5, hour: 1, job: /tmp/hello.sh}
 ```
+* 服务属性列表
 
-### 定义每个服务需要部署到那些host上
+属性|作用|子属性|相关action  
+-|-|-|-
+cp|copy文件到目标机器|src、dest|cp,push
+cp2|copy文件到目标机(指定目录)|src、dest、files|cp2,push
+cp_t|template替换配置文件中的变量并copy到目标机器|src、dest|cp_t, push  
+cmd|运行指令|shell命令|cmd
+crontab|安装定时任务|state、name、minute、hour、day、month、weekday、job|install、remove
+
+### 定义机器
+* 在inventory中定义每个服务需要部署到那些host上
 ```yaml
 # 描述连接一个机器的方式
-127.0.0.1 ansible_ssh_user=liuping ansible_ssh_pass=liuping ansible_sudo_pass=liuping
+127.0.0.1 ansible_sudo_host=127.0.0.1 ansible_ssh_user=liuping ansible_ssh_pass=liuping
 
 [server1]
 127.0.0.1
@@ -45,41 +56,42 @@ source ~/.bashrc
 [server2]
 127.0.0.1
 ```
-
-### 部署例子
-```shell script
-run.sh cp server1,server2 server.yml inventory
-run.sh cp,cmd server1 server.yml host.ini
-run.sh cp,crontab server2 server.yml host.ini
+* inventory文件
+1.定义所有机器的连接信息。如：
 ```
-# deploy详细介绍
-### 服务属性列表
+机器别名 ansible_ssh_host=ip ansible_ssh_user=用户名 ansible_ssh_pass=密码
+```
+2.定义机器的分组。一般我们按服务名为分组名，表示这个服务要部署到哪些机器。如：
+```
+[server1]
+127.0.0.1
+```
 
-属性|作用|子属性  
--|-|- 
-cp|copy文件到目标机器|src、dest
-cp2|copy文件到目标机(指定目录)|src、dest、files
-cp_t|template替换配置文件中的变量并copy到目标机器|src、dest  
-cmd|运行指令|shell命令
-crontab|安装定时任务|state、name、minute、hour、day、month、weekday、job
+### 部署命令
+```shell script
+run.sh server1,server2 cp
+run.sh server1 cp,cmd
+run.sh server2 cp,crontab
+```
 
+# 其他
 ### 自定义service.sh脚本来启动服务
 ```
-  #普通服务
-  server1:
-    copy_file: # 支持数组
-      - src: /tmp/server_1
-        dest: /tmp/server_1
-      - src: /tmp/service.sh
-        dest: /tmp/service.sh
-    start: "cd /tmp/ && service.sh start server_1"
-    stop: "cd /tmp/ && service.sh stop server_1"
-    status: "cd /tmp/ && service.sh status server_1"
+#普通服务
+server1:
+  cp: # 支持数组
+    - src: /tmp/server_1
+      dest: /tmp/server_1
+    - src: /tmp/service.sh
+      dest: /tmp/service.sh
+  start: "cd /tmp/ && service.sh start server_1"
+  stop: "cd /tmp/ && service.sh stop server_1"
+  status: "cd /tmp/ && service.sh status server_1"
 ```
 
 ### 部署crontab定时任务
 部署crontab定时任务需要使用的属性：
-1. copy_file copy普通文件
+1. cp copy普通文件
 2. template 替换包含变量的配置文件
 3. crontab 描述定时任务。  
 

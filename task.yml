@@ -5,7 +5,7 @@
   gather_facts: no
   tasks:
     # push server files
-    - name: "{{server_name}}: copy file"
+    - name: "{{server_name}}: copy files"
       copy:
         src: '{{work_dir}}/{{item.src}}'
         dest: '{{item.dest}}'
@@ -17,20 +17,10 @@
         - cp
         - push
 
-    - name: "{{server_name}}: check dest dir"
-      file:
-        path: '{{item.dest}}/'
-        state: directory
-      with_items:
-        "{{vars[server_name].cp2|default({})}}"
-      tags:
-        - cp2
-        - push
-
-    - name: "{{server_name}}: copy file curt"
+    - name: "{{server_name}}: copy choose files"
       copy:
-        src: '{{work_dir}}/{{item.0.src}}/{{item.1}}/'
-        dest: '{{item.0.dest}}/{{item.1}}'
+        src: '{{work_dir}}/{{item.0.src}}/{{item.1}}'
+        dest: '{{item.0.dest}}/'
         backup: no
         mode: preserve
       with_subelements:
@@ -41,7 +31,7 @@
         - push
 
     # push server files
-    - name: "{{server_name}}: template file"
+    - name: "{{server_name}}: template files"
       template:
         src: '{{work_dir}}/{{item.src}}'
         dest: '{{item.dest}}'
@@ -121,6 +111,9 @@
       tags:
         - status
 
+    ###############################################
+    # crontab: install remove
+    ###############################################
     - name: "{{server_name}}: install cron"
       cron:
         name: "{{item.name|default('*')}}"
