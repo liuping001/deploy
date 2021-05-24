@@ -4,11 +4,12 @@
 2. 通过在deploy/test/inventory文件中描述每个服务需要部署到那些机器上
 3. 使用"deploy server1,server2 action1,action2" 进行部署。例如 "deploy server1 cp"
 
-# 安装依赖
+# 安装
+* 依赖ansible
 ```shell script
 sudo yum install ansible -y
 ```
-# 安装deploy
+* 安装deploy
 ```
 ansible-playbook -i "localhost," -c local install.yml 
 source ~/.bashrc
@@ -18,21 +19,21 @@ source ~/.bashrc
 * 在all.yml定义部署服务的配置项。
 例如：
 ```yaml
-  # 普通服务
-  server1:
-    cp: # 支持数组
-      - src: /tmp/test.py
-        dest: /tmp/server_1.py
-    cmd: # 支持数组
-      - "mkdir -p /tmp/server_1_log"
-    
-  #定时任务
-  server2:
-    cp:
-      - src: example/hello.sh
-        dest: /tmp/hello.sh
-    crontab:
-      - {state: install, name: hello, minute: 5, hour: 1, job: /tmp/hello.sh}
+# 普通服务
+server1:
+  cp: # 支持数组
+    - src: test.py
+      dest: /tmp/server_1.py
+  cmd: # 支持数组
+    - "mkdir -p /tmp/server_1_log"
+  
+#定时任务
+server2:
+  cp:
+    - src: hello.sh
+      dest: /tmp/hello.sh
+  crontab:
+    - {state: install, name: hello, minute: 5, hour: 1, job: /tmp/hello.sh}
 ```
 * 服务属性列表
 
@@ -56,12 +57,14 @@ crontab|安装定时任务|state、name、minute、hour、day、month、weekday�
 [server2]
 127.0.0.1
 ```
-* inventory文件
-1.定义所有机器的连接信息。如：
+#### inventory文件
+在inventory文件中需要定义出两个信息。  
+  
+* 1.定义所有机器的连接信息。如：
 ```
 机器别名 ansible_ssh_host=ip ansible_ssh_user=用户名 ansible_ssh_pass=密码
 ```
-2.定义机器的分组。一般我们按服务名为分组名，表示这个服务要部署到哪些机器。如：
+* 2.定义机器的分组。一般我们按服务名为分组名，表示这个服务要部署到哪些机器。如：
 ```
 [server1]
 127.0.0.1
@@ -69,9 +72,9 @@ crontab|安装定时任务|state、name、minute、hour、day、month、weekday�
 
 ### 部署命令
 ```shell script
-run.sh server1,server2 cp
-run.sh server1 cp,cmd
-run.sh server2 cp,crontab
+deploy server1,server2 cp
+deploy server1 cp,cmd
+deploy server2 cp,crontab
 ```
 
 # 其他
