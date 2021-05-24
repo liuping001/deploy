@@ -1,0 +1,31 @@
+init_host:
+  cmd:
+    - "ls -l /tmp"
+
+server1:
+  cp:
+    - src: test.py
+      dest: /tmp/server_1.py
+  cmd:
+    - "mkdir -p /tmp/server_1_log"
+
+server2:
+  cp:
+    - src: test.py
+      dest: /tmp/server_2.py
+  cp2:
+    - src: ../example/
+      dest: /tmp/
+      files:
+        - test.py
+  cmd:
+    - "mkdir -p /tmp/server_2_log"
+  start: "cd /tmp && nohup python server_2.py &"
+
+# 安装定时任务
+server3:
+  cp:
+    - src: hello.sh
+      dest: /tmp/hello.sh
+  crontab:
+    - {state: install, name: hello, minute: 5, hour: 1, job: /tmp/hello.sh}

@@ -1,0 +1,26 @@
+- name: "install deploy"
+  hosts: all
+  gather_facts: no
+  tasks:
+    - name: "1/3: mkdir ~/.bin"
+      file:
+        path: '~/.bin'
+        mode: 0755
+        state: directory
+    - name: "2/3: PATH to ~/.bashrc"
+      lineinfile:
+        path: ~/.bashrc
+        state: present
+        regexp: '^export PATH=~/.bin:$PATH'
+        line: "export PATH=~/.bin:$PATH"
+    - name: "3/3: copy deploy.sh task.yml"
+      copy:
+        src: './{{item.src}}'
+        dest: '{{item.dest}}'
+        backup: no
+        mode: preserve
+      with_items:
+        - src: deploy.sh
+          dest: ~/.bin/deploy
+        - src: task.yml
+          dest: ~/.bin/task.yml
