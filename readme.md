@@ -1,8 +1,8 @@
 # 简介
 这是一个通用的服务器部署工具,使用的方式如example所示：
-1. 通过在deploy/test/group_vars/all.yml配置文件中描述每个服务的部署行为，如cp, template, cmd, crontab
+1. 通过在deploy/test/group_vars/all.yml配置文件中描述每个服务的部署行为，如cp,cp2,cp_t,start,stop,state,cmd,crontab
 2. 通过在deploy/test/inventory文件中描述每个服务需要部署到那些机器上
-3. 使用"deploy server1,server2 action1,action2" 进行部署。例如 "deploy server1 cp"
+3. 使用"deploy server1,server2 action1,action2" 进行部署。例如 "deploy server1 push"
 
 注：
 > 如果有多套环境，deploy可以创建表示不同环境的文件夹。如：test、dev、live  
@@ -65,10 +65,13 @@ server2:
 属性|作用|子属性|相关action  
 -|-|-|-
 cp|copy文件到目标机器|src、dest|cp,push
-cp2|copy文件到目标机(指定目录)|src、dest、files|cp2,push
+cp2|指定目录，copy一批文件到目标机|src、dest、files|cp2,push
 cp_t|template替换配置文件中的变量并copy到目标机器|src、dest|cp_t, push  
-cmd|运行指令|shell命令|cmd
-crontab|安装定时任务|state、name、minute、hour、day、month、weekday、job|install、remove
+cmd|运行指令，可用于启动服务前的初始化工作|shell命令|cmd
+start|自定义启动程序的命令||start
+stop|自定义停止程序的命令||stop
+state|自定义查询程序是否启动的命令||state
+crontab|安装定时任务|name、minute、hour、day、month、weekday、job|install、remove
 
 ### 定义机器
 * 在inventory中定义每个服务需要部署到那些host上
