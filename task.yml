@@ -131,7 +131,7 @@
         month: "{{item.month|default('*')}}"
         weekday: "{{item.weekday|default('*')}}"
         job: "{{item.job}}"
-        state: "{{item.state|regex_replace('remove', 'absent')|regex_replace('install', 'present')}}"
+        state: present
       with_items:
         "{{vars[server_name].crontab|default({})}}"
       tags:
