@@ -4,6 +4,10 @@
 2. 通过在deploy/test/inventory文件中描述每个服务需要部署到那些机器上
 3. 使用"deploy server1,server2 action1,action2" 进行部署。例如 "deploy server1 cp"
 
+注：
+> 如果有多套环境，deploy可以创建表示不同环境的文件夹。如：test、dev、live  
+> 每个环境中在inventory文件中定义机器分组的信息，在group_vars文件夹中定义组变量文件，all.yml表示默认变量值，可以在具体的组中覆盖同名变量
+
 # 安装
 * 依赖ansible
 ```shell script
@@ -29,6 +33,7 @@ init_host:
 
 # 定义1个服务
 server1:
+  # copy相关文件，有以下几种cp的方式
   cp:
     - src: test.py # 只能是文件
       dest: server1/ #这里填文件夹: server1/ 。 也可以填文件:server1/test.py，但上级目录需要存在

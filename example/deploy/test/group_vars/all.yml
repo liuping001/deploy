@@ -11,7 +11,7 @@ server1:
   cp:
     - src: test.py # 只能是文件
       dest: server1/ #这里填文件夹: server1/ 。 也可以填文件:server1/test.py，但上级目录需要存在
-  # cp2 指定文件中要copy的文件列表
+  # cp2 指定文件夹中要copy的文件列表
   cp2:
     - src: ./ # 不管带不带/都表示目录
       dest: server1 # 不管带不带/都表示目录
@@ -19,7 +19,7 @@ server1:
         - test.py
   cp_t: # 模板替换配置文件
     - src: config.ini
-      dest: server2/ #这里填文件夹: server1/ 。 也可以填文件:server1/test.py，但上级目录需要存在
+      dest: server1/ #这里填文件夹: server1/ 。 也可以填文件:server1/test.py，但上级目录需要存在
 
   # start，stop，status默认会进入，dest_dir所在的文件，然后接着执行后面的命令。如果dest_dir为空，就进入用户目录了
   start: "cd server1 && nohup python test.py &"
