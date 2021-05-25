@@ -48,8 +48,8 @@ fi
 server_list=$(echo $1 | tr "," "\n")
 action_list=$(echo $2 | tr "," "\n")
 
-echo "-> action: "$action_list
 echo "-> server: "$server_list
+echo "-> action: "$action_list
 
 echo -e "\033[0m"
 

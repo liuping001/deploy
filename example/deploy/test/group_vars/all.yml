@@ -30,6 +30,6 @@ server1:
 server2:
   cp:
     - src: hello.sh
-      dest: /tmp/hello.sh
+      dest: /tmp/server2/
   crontab:
-    - {state: install, name: hello, minute: 5, hour: 1, job: /tmp/hello.sh}
+    - {state: install, name: hello, minute: 5, hour: 1, job: /tmp/server2/hello.sh}
