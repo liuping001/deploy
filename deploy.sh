@@ -57,6 +57,6 @@ for server in ${server_list}
 do
   for action in ${action_list}
     do
-      ansible-playbook -i ${current_dir}/inventory ~/.bin/task.yml --tags="$2" -e "server_name=$server work_dir=${proj_dir} deploy_vars_file=${deploy_vars_file}"
+      ansible-playbook -i ${current_dir}/inventory ~/.bin/task.yml --tags=$action -e "server_name=$server work_dir=${proj_dir} deploy_vars_file=${deploy_vars_file}"
     done
 done

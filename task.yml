@@ -10,7 +10,7 @@
     - name: "{{server_name}}: copy files"
       copy:
         src: '{{work_dir}}/{{item.src}}'
-        dest: '{{item.dest}}'
+        dest: '{{dest_dir|default({})}}/{{item.dest}}'
         backup: no
         mode: preserve
       with_items:
@@ -18,11 +18,12 @@
       tags:
         - cp
         - push
+        - nover
 
     - name: "{{server_name}}: copy choose files"
       copy:
         src: '{{work_dir}}/{{item.0.src}}/{{item.1}}'
-        dest: '{{item.0.dest}}/'
+        dest: '{{dest_dir|default({})}}/{{item.0.dest}}/'
         backup: no
         mode: preserve
       with_subelements:
@@ -31,18 +32,20 @@
       tags:
         - cp2
         - push
+        - nover
 
     # push server files
     - name: "{{server_name}}: template files"
       template:
         src: '{{work_dir}}/{{item.src}}'
-        dest: '{{item.dest}}'
+        dest: '{{dest_dir|default({})}}/{{item.dest}}'
         mode: preserve
       with_items:
         "{{vars[server_name].cp_t|default({})}}"
       tags:
         - cp_t
         - push
+        - nover
 
     # init cmd for server
     - name: "{{server_name}}: cmd"
@@ -53,6 +56,7 @@
         '{{vars[server_name].cmd|default({})}}'
       tags:
         - cmd
+        - nover
 
     ###############################################
     # for: remote build
@@ -60,7 +64,7 @@
 
     - name: "{{server_name}}: fetch file"
       fetch:
-        src: '{{item.src}}'
+        src: '{{dest_dir|default({})}}/{{item.src}}'
         dest: '{{work_dir}}/{{item.dest}}/'
         backup: no
         remote_src: True
@@ -70,6 +74,7 @@
         "{{vars[server_name].fetch|default({})}}"
       tags:
         - fetch
+        - nover
 
     ###############################################
     # shell: start stop restart status
@@ -77,42 +82,43 @@
     # start server
     - name: "{{server_name}}: start"
       shell:
-        cmd: '{{vars[server_name].start}}'
+        cmd: 'cd {{dest_dir|default({})}} && {{vars[server_name].start}}'
       tags:
         - start
+        - nover
 
     # stop server
     - name: "{{server_name}}: stop"
       shell:
-        cmd: '{{vars[server_name].stop}}'
+        cmd: 'cd {{dest_dir|default({})}} && {{vars[server_name].stop}}'
       tags:
         - stop
+        - nover
 
     # restart server
     - name: "{{server_name}}: restart"
       shell:
-        cmd: '{{vars[server_name].restart}}'
+        cmd: 'cd {{dest_dir|default({})}} && {{vars[server_name].restart}}'
       tags:
         - restart
+        - nover
 
     # status server
-    - name: "{{server_name}}: status"
+    - name: "{{server_name}}: state"
       shell:
-        cmd: '{{vars[server_name].status}}'
+        cmd: 'cd {{dest_dir|default({})}} && {{vars[server_name].state}}'
       register: ret
       failed_when: "ret.stderr != ''"
-      when: vars[server_name].status is defined
+      ignore_errors: yes
       tags:
-        - status
-    - name: "{{server_name}}: status print"
+        - state
+        - nover
+    - name: "{{server_name}}: state print"
       debug:
-        msg:
-          - "{{ret.stdout.split('\n')}}"
-          - "{{ret.stderr.split('\n')}}"
-      when: vars[server_name].status is defined
+        msg: "{{ret.stdout}}"
       tags:
-        - status
-
+        - state
+        - nover
     ###############################################
     # crontab: install remove
     ###############################################
@@ -130,6 +136,7 @@
         "{{vars[server_name].crontab|default({})}}"
       tags:
         - install
+        - nover
 
     - name: "{{server_name}}: remove cron"
       cron:
@@ -145,3 +152,4 @@
         "{{vars[server_name].crontab|default({})}}"
       tags:
         - remove
+        - nover

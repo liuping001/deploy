@@ -1,29 +1,33 @@
+# 目的文件夹，也可以不提供，默认为空。文件的目的地址为 dest_dir + dest
+dest_dir: /tmp/test_deploy/
+
+# 可以将所有主机定义在一个分组，执行一些机器初始化的工作
 init_host:
   cmd:
     - "ls -l /tmp"
 
+# 定义1个服务
 server1:
   cp:
-    - src: test.py
-      dest: /tmp/server_1.py
-  cmd:
-    - "mkdir -p /tmp/server_1_log"
-
-server2:
-  cp:
-    - src: test.py
-      dest: /tmp/server_2.py
+    - src: test.py # 只能是文件
+      dest: server1/ #这里填文件夹: server1/ 。 也可以填文件:server1/test.py，但上级目录需要存在
+  # cp2 指定文件中要copy的文件列表
   cp2:
-    - src: ../example/
-      dest: /tmp/
+    - src: ./ # 不管带不带/都表示目录
+      dest: server1 # 不管带不带/都表示目录
       files:
         - test.py
-  cmd:
-    - "mkdir -p /tmp/server_2_log"
-  start: "cd /tmp && nohup python server_2.py &"
+  cp_t: # 模板替换配置文件
+    - src: config.ini
+      dest: server2/ #这里填文件夹: server1/ 。 也可以填文件:server1/test.py，但上级目录需要存在
 
-# 安装定时任务
-server3:
+  # start，stop，status默认会进入，dest_dir所在的文件，然后接着执行后面的命令。如果dest_dir为空，就进入用户目录了
+  start: "cd server1 && nohup python test.py &"
+  stop: "cd server1 && ps -ef|grep test.py|grep -v color|grep -v grep|awk '{print $2}'|xargs kill"
+  state: "cd server1 && ps -ef|grep test.py|grep -v color|grep -v grep"
+
+# 定义一个定时任务类型的服务
+server2:
   cp:
     - src: hello.sh
       dest: /tmp/hello.sh

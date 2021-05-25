@@ -19,15 +19,35 @@ source ~/.bashrc
 * 在all.yml定义部署服务的配置项。
 例如：
 ```yaml
-# 普通服务
+# 目的文件夹，也可以不提供，默认为空。文件的目的地址为 dest_dir + dest
+dest_dir: /tmp/test_deploy/
+
+# 可以将所有主机定义在一个分组，执行一些机器初始化的工作
+init_host:
+  cmd:
+    - "ls -l /tmp"
+
+# 定义1个服务
 server1:
-  cp: # 支持数组
-    - src: test.py
-      dest: /tmp/server_1.py
-  cmd: # 支持数组
-    - "mkdir -p /tmp/server_1_log"
-  
-#定时任务
+  cp:
+    - src: test.py # 只能是文件
+      dest: server1/ #这里填文件夹: server1/ 。 也可以填文件:server1/test.py，但上级目录需要存在
+  # cp2 指定文件中要copy的文件列表
+  cp2:
+    - src: ./ # 不管带不带/都表示目录
+      dest: server1 # 不管带不带/都表示目录
+      files:
+        - test.py
+  cp_t: # 模板替换配置文件
+    - src: config.ini
+      dest: server2/ #这里填文件夹: server1/ 。 也可以填文件:server1/test.py，但上级目录需要存在
+
+  # start，stop，status默认会进入，dest_dir所在的文件，然后接着执行后面的命令。如果dest_dir为空，就进入用户目录了
+  start: "cd server1 && nohup python test.py &"
+  stop: "cd server1 && ps -ef|grep test.py|grep -v color|awk '{print $2}'|xargs kill"
+  state: "cd server1 && ps -ef|grep test.py|grep -v color"
+
+# 定义一个定时任务类型的服务
 server2:
   cp:
     - src: hello.sh
@@ -72,25 +92,12 @@ crontab|安装定时任务|state、name、minute、hour、day、month、weekday�
 
 ### 部署命令
 ```shell script
-deploy server1,server2 cp
-deploy server1 cp,cmd
-deploy server2 cp,crontab
+deploy server1 push
+deploy server1 start,state
+deploy server2 push,crontab
 ```
 
 # 其他
-### 自定义service.sh脚本来启动服务
-```
-#普通服务
-server1:
-  cp: # 支持数组
-    - src: /tmp/server_1
-      dest: /tmp/server_1
-    - src: /tmp/service.sh
-      dest: /tmp/service.sh
-  start: "cd /tmp/ && service.sh start server_1"
-  stop: "cd /tmp/ && service.sh stop server_1"
-  status: "cd /tmp/ && service.sh status server_1"
-```
 
 ### 部署crontab定时任务
 部署crontab定时任务需要使用的属性：
