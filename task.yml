@@ -71,7 +71,7 @@
     - name: "{{server_name}}: fetch file"
       fetch:
         src: '{{dest_dir|default("")}}/{{item.src}}'
-        dest: '{{item.dest}}/'
+        dest: '{{item.dest}}'
         backup: no
         remote_src: True
         mode: preserve
@@ -81,7 +81,17 @@
       tags:
         - fetch
         - nover
-
+#  synchronize -a "src=/tmp/client/ dest=/tmp/server mode=pull"
+    - name: "{{server_name}}: sync push"
+      synchronize:
+        src: '{{work_dir}}/{{item.src}}'
+        dest: '{{item.dest}}'
+        mode: push
+      with_items:
+        "{{vars[server_name].sync|default({})}}"
+      tags:
+        - sync
+        - nover
     ###############################################
     # shell: start stop restart status
     ###############################################
