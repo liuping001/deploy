@@ -16,7 +16,7 @@
     - name: "{{server_name}}: copy files"
       copy:
         src: '{{work_dir}}/{{item.src}}'
-        dest: '{{dest_dir|default({})}}/{{item.dest}}'
+        dest: '{{dest_dir|default("")}}/{{item.dest}}'
         backup: no
         mode: preserve
       with_items:
@@ -29,7 +29,7 @@
     - name: "{{server_name}}: copy choose files"
       copy:
         src: '{{work_dir}}/{{item.0.src}}/{{item.1}}'
-        dest: '{{dest_dir|default({})}}/{{item.0.dest}}/'
+        dest: '{{dest_dir|default("")}}/{{item.0.dest}}/'
         backup: no
         mode: preserve
       with_subelements:
@@ -44,7 +44,7 @@
     - name: "{{server_name}}: template files"
       template:
         src: '{{work_dir}}/{{item.src}}'
-        dest: '{{dest_dir|default({})}}/{{item.dest}}'
+        dest: '{{dest_dir|default("")}}/{{item.dest}}'
         mode: preserve
       with_items:
         "{{vars[server_name].cp_t|default({})}}"
@@ -70,8 +70,8 @@
 
     - name: "{{server_name}}: fetch file"
       fetch:
-        src: '{{dest_dir|default({})}}/{{item.src}}'
-        dest: '{{work_dir}}/{{item.dest}}/'
+        src: '{{dest_dir|default("")}}/{{item.src}}'
+        dest: '{{item.dest}}/'
         backup: no
         remote_src: True
         mode: preserve
@@ -88,7 +88,7 @@
     # start server
     - name: "{{server_name}}: start"
       shell:
-        cmd: 'cd {{dest_dir|default({})}} && {{vars[server_name].start|default(start)}}'
+        cmd: 'cd {{dest_dir|default("")}} && {{vars[server_name].start|default(start)}}'
       tags:
         - start
         - nover
@@ -96,7 +96,7 @@
     # stop server
     - name: "{{server_name}}: stop"
       shell:
-        cmd: 'cd {{dest_dir|default({})}} && {{vars[server_name].stop|default(stop)}}'
+        cmd: 'cd {{dest_dir|default("")}} && {{vars[server_name].stop|default(stop)}}'
       tags:
         - stop
         - nover
@@ -104,7 +104,7 @@
     # restart server
     - name: "{{server_name}}: restart"
       shell:
-        cmd: 'cd {{dest_dir|default({})}} && {{vars[server_name].restart|default(restart)}}'
+        cmd: 'cd {{dest_dir|default("")}} && {{vars[server_name].restart|default(restart)}}'
       tags:
         - restart
         - nover
@@ -112,7 +112,7 @@
     # status server
     - name: "{{server_name}}: state"
       shell:
-        cmd: 'cd {{dest_dir|default({})}} && {{vars[server_name].state|default(state)}}'
+        cmd: 'cd {{dest_dir|default("")}} && {{vars[server_name].state|default(state)}}'
       register: ret
       failed_when: "ret.stderr != ''"
       ignore_errors: yes
