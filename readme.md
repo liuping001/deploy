@@ -118,12 +118,10 @@ deploy server2 push,crontab
 # 其他
 
 ### 部署crontab定时任务
-部署crontab定时任务需要使用的属性：
-1. cp copy普通文件
-2. template 替换包含变量的配置文件
-3. crontab 描述定时任务。  
-
-对于crontab属性有以下规则：必须定义job属性。 state只能是install或remove。name是一个定时任务的索引关键字，必须定义且唯一。minute、hour、day、month、weekday等属性都是可选的，默认为"*"。 
+对于crontab属性有以下说明：
+* 必须定义job属性。 
+* name是一个定时任务的索引关键字，必须定义且唯一。
+* minute、hour、day、month、weekday等属性都是可选的，默认为"*"。 
 
 
 
