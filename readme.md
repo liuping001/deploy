@@ -37,11 +37,10 @@ init_host:
 
 # 定义1个服务
 server1:
-  # copy相关文件，有以下几种cp的方式
   cp:
     - src: test.py # 只能是文件
       dest: server1/ #这里填文件夹: server1/ 。 也可以填文件:server1/test.py，但上级目录需要存在
-  # cp2 指定文件中要copy的文件列表
+  # cp2 指定文件夹中要copy的文件列表
   cp2:
     - src: ./ # 不管带不带/都表示目录
       dest: server1 # 不管带不带/都表示目录
@@ -49,20 +48,21 @@ server1:
         - test.py
   cp_t: # 模板替换配置文件
     - src: config.ini
-      dest: server2/ #这里填文件夹: server1/ 。 也可以填文件:server1/test.py，但上级目录需要存在
+      dest: server1/ #这里填文件夹: server1/ 。 也可以填文件:server1/test.py，但上级目录需要存在
 
   # start，stop，status默认会进入，dest_dir所在的文件，然后接着执行后面的命令。如果dest_dir为空，就进入用户目录了
   start: "cd server1 && nohup python test.py &"
-  stop: "cd server1 && ps -ef|grep test.py|grep -v color|awk '{print $2}'|xargs kill"
-  state: "cd server1 && ps -ef|grep test.py|grep -v color"
+  stop: "cd server1 && ps -ef|grep test.py|grep -v color|grep -v grep|awk '{print $2}'|xargs kill"
+  state: "cd server1 && ps -ef|grep test.py|grep -v color|grep -v grep"
+#  start_file: server1/start.sh
 
 # 定义一个定时任务类型的服务
 server2:
   cp:
     - src: hello.sh
-      dest: /tmp/hello.sh
+      dest: /tmp/server2/
   crontab:
-    - {state: install, name: hello, minute: 5, hour: 1, job: /tmp/hello.sh}
+    - {state: install, name: hello, minute: 5, hour: 1, job: /tmp/server2/hello.sh}
 ```
 * 服务属性列表
 
@@ -75,7 +75,13 @@ cmd|运行指令，可用于启动服务前的初始化工作|shell命令|cmd
 start|自定义启动程序的命令||start
 stop|自定义停止程序的命令||stop
 state|自定义查询程序是否启动的命令||state
+start_file|未定义start、stop、state属性时使用||start、stop、state|
 crontab|安装定时任务|name、minute、hour、day、month、weekday、job|install、remove
+
+**关于start_file属性的说明**
+> start_file: server1/start.sh 
+> 如果定义了start_file属性，start、stop、state属性将会失效。取而代之的是 start_file start; start_file stop; start_file state;    
+> 如果没有定义start_file，也没有定义 start、stop、state。将会使用默认的start_file={{server_name}}/start.sh，如例子中的server1/start.sh  
 
 ### 定义机器
 * 在inventory中定义每个服务需要部署到那些host上

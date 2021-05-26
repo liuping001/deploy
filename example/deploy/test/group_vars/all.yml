@@ -25,11 +25,17 @@ server1:
   start: "cd server1 && nohup python test.py &"
   stop: "cd server1 && ps -ef|grep test.py|grep -v color|grep -v grep|awk '{print $2}'|xargs kill"
   state: "cd server1 && ps -ef|grep test.py|grep -v color|grep -v grep"
+#  start_file: server1/start.sh
+# 如果定义了start_file，start、stop、state命令将会失效
+# 取而代之的是 start_file start； start_file stop; start_file state
+# 如果没有定义start_file，也没有定义 start、stop、state。将会使用默认的start_file={{server_name}}/start.sh，如这里的server1
 
 # 定义一个定时任务类型的服务
 server2:
   cp:
     - src: hello.sh
-      dest: /tmp/server2/
+      dest: server2/
+    - src: start.sh
+      dest: server2/
   crontab:
     - {state: install, name: hello, minute: 5, hour: 1, job: /tmp/server2/hello.sh}

@@ -5,6 +5,12 @@
   gather_facts: no
   vars_files:
     - "{{deploy_vars_file}}"
+  vars:
+    default_start_file: '{{server_name}}/start.sh'
+    start: '{{vars[server_name].start_file|default(default_start_file)}} start'
+    stop: '{{vars[server_name].start_file|default(default_start_file)}} stop'
+    restart: '{{vars[server_name].start_file|default(default_start_file)}} restart'
+    state: '{{vars[server_name].start_file|default(default_start_file)}} state'
   tasks:
     # push server files
     - name: "{{server_name}}: copy files"
@@ -82,7 +88,7 @@
     # start server
     - name: "{{server_name}}: start"
       shell:
-        cmd: 'cd {{dest_dir|default({})}} && {{vars[server_name].start}}'
+        cmd: 'cd {{dest_dir|default({})}} && {{vars[server_name].start|default(start)}}'
       tags:
         - start
         - nover
@@ -90,7 +96,7 @@
     # stop server
     - name: "{{server_name}}: stop"
       shell:
-        cmd: 'cd {{dest_dir|default({})}} && {{vars[server_name].stop}}'
+        cmd: 'cd {{dest_dir|default({})}} && {{vars[server_name].stop|default(stop)}}'
       tags:
         - stop
         - nover
@@ -98,7 +104,7 @@
     # restart server
     - name: "{{server_name}}: restart"
       shell:
-        cmd: 'cd {{dest_dir|default({})}} && {{vars[server_name].restart}}'
+        cmd: 'cd {{dest_dir|default({})}} && {{vars[server_name].restart|default(restart)}}'
       tags:
         - restart
         - nover
@@ -106,7 +112,7 @@
     # status server
     - name: "{{server_name}}: state"
       shell:
-        cmd: 'cd {{dest_dir|default({})}} && {{vars[server_name].state}}'
+        cmd: 'cd {{dest_dir|default({})}} && {{vars[server_name].state|default(state)}}'
       register: ret
       failed_when: "ret.stderr != ''"
       ignore_errors: yes
