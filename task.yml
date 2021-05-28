@@ -58,6 +58,8 @@
       shell:
         cmd: '{{item}}'
         warn: False
+      register: ret
+      when: ret is undefined or ret.rc == 0
       with_items:
         '{{vars[server_name].cmd|default({})}}'
       tags:
