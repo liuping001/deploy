@@ -10,7 +10,7 @@
 * 运行deploy命令需要在有inventory文件的目录中。例如example中的列子需要 cd example/deploy/test;  
 * deploy命令会在当前文件路径上寻找deploy文件夹，如果找到/根目录还没有找到，就输出"not find dir deploy/"  
 * 如果有多套环境，deploy可以创建表示不同环境的文件夹。如：test、dev、live  
-* 每个环境中在inventory文件中定义机器分组的信息，在group_vars文件夹中定义组变量文件，all.yml表示默认变量值，可以在具体的组中覆盖同名变量  
+* 每个环境中在inventory文件中定义机器分组的信息，在group_vars文件夹中定义组变量文件，all.yml表示默认组变量，可以在具体的组中覆盖同名变量  
 
 # 安装
 * 依赖ansible
