@@ -1,6 +1,6 @@
 # 简介
 这是一个通用的服务器部署工具,使用的方式如example所示：
-1. 通过在deploy/test/group_vars/all.yml配置文件中描述每个服务的部署行为，如cp,cp2,cp_t,start,stop,state,cmd,crontab
+1. 通过在deploy/test/group_vars/all.yml配置文件中描述每个服务的部署行为，如push,start,stop,state,cmd,crontab
 2. 通过在deploy/test/inventory文件中描述每个服务需要部署到那些机器上
 3. 使用"deploy server1,server2 action1,action2" 进行部署。例如 
 > deploy server1 push  
@@ -37,18 +37,18 @@ init_host:
 
 # 定义1个服务
 server1:
-  cp:
+  push:
     - src: test.py # 只能是文件
       dest: server1/ #这里填文件夹: server1/ 。 也可以填文件:server1/test.py，但上级目录需要存在
-  # cp2 指定文件夹中要copy的文件列表
-  cp2:
+  # files 指定文件夹中要copy的文件列表
     - src: ./ # 不管带不带/都表示目录
       dest: server1 # 不管带不带/都表示目录
       files:
         - test.py
-  cp_t: # 模板替换配置文件
+  # 模板替换配置文件
     - src: config.ini
       dest: server1/ #这里填文件夹: server1/ 。 也可以填文件:server1/test.py，但上级目录需要存在
+      template: yes
 
   # start，stop，status默认会进入，dest_dir所在的文件，然后接着执行后面的命令。如果dest_dir为空，就进入用户目录了
   start: "cd server1 && nohup python test.py &"
@@ -58,7 +58,7 @@ server1:
 
 # 定义一个定时任务类型的服务
 server2:
-  cp:
+  push:
     - src: hello.sh
       dest: /tmp/server2/
   crontab:
@@ -68,9 +68,7 @@ server2:
 
 属性|作用|子属性|相关action  
 -|-|-|-
-cp|copy文件到目标机器|src、dest|cp,push
-cp2|指定目录，copy一批文件到目标机|src、dest、files|cp2,push
-cp_t|template替换配置文件中的变量并copy到目标机器|src、dest|cp_t, push  
+push|copy文件到目标机器|src、dest、files、template|push 
 cmd|运行指令，可用于启动服务前的初始化工作|shell命令|cmd
 start|自定义启动程序的命令||start
 stop|自定义停止程序的命令||stop

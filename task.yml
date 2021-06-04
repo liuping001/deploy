@@ -20,9 +20,9 @@
         backup: no
         mode: preserve
       with_items:
-        "{{vars[server_name].cp|default({})}}"
+        "{{vars[server_name].push|default({})}}"
+      when: item.files is undefined and item.template is undefined
       tags:
-        - cp
         - push
         - nover
 
@@ -33,10 +33,11 @@
         backup: no
         mode: preserve
       with_subelements:
-        - "{{vars[server_name].cp2|default({})}}"
+        - "{{vars[server_name].push|default({})}}"
         - files
+        - flags:
+          skip_missing: true # https://www.codenong.com/24616107/
       tags:
-        - cp2
         - push
         - nover
 
@@ -47,9 +48,9 @@
         dest: '{{dest_dir|default("")}}/{{item.dest}}'
         mode: preserve
       with_items:
-        "{{vars[server_name].cp_t|default({})}}"
+        "{{vars[server_name].push|default({})}}"
+      when: item.template is defined  and item.template == 1
       tags:
-        - cp_t
         - push
         - nover
 

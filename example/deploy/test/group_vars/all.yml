@@ -8,18 +8,18 @@ init_host:
 
 # 定义1个服务
 server1:
-  cp:
+  push:
     - src: test.py # 只能是文件
       dest: server1/ #这里填文件夹: server1/ 。 也可以填文件:server1/test.py，但上级目录需要存在
-  # cp2 指定文件夹中要copy的文件列表
-  cp2:
+    # files 指定文件夹中要copy的文件列表
     - src: ./ # 不管带不带/都表示目录
       dest: server1 # 不管带不带/都表示目录
       files:
         - test.py
-  cp_t: # 模板替换配置文件
+   # template模板替换配置文件
     - src: config.ini
       dest: server1/ #这里填文件夹: server1/ 。 也可以填文件:server1/test.py，但上级目录需要存在
+      template: yes
 
   # start，stop，status默认会进入，dest_dir所在的文件，然后接着执行后面的命令。如果dest_dir为空，就进入用户目录了
   start: "cd server1 && nohup python test.py &"
@@ -32,7 +32,7 @@ server1:
 
 # 定义一个定时任务类型的服务
 server2:
-  cp:
+  psuh:
     - src: hello.sh
       dest: server2/
     - src: start.sh
