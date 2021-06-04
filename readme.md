@@ -50,7 +50,7 @@ server1:
       dest: server1/ #这里填文件夹: server1/ 。 也可以填文件:server1/test.py，但上级目录需要存在
       template: yes
 
-  # start，stop，status默认会进入，dest_dir所在的文件，然后接着执行后面的命令。如果dest_dir为空，就进入用户目录了
+  # start，stop，status默认会进入，dest_dir所在的文件夹，然后接着执行后面的命令。如果dest_dir为空，就进入用户目录了
   start: "cd server1 && nohup python test.py &"
   stop: "cd server1 && ps -ef|grep test.py|grep -v color|grep -v grep|awk '{print $2}'|xargs kill"
   state: "cd server1 && ps -ef|grep test.py|grep -v color|grep -v grep"

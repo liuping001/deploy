@@ -26,3 +26,5 @@
           dest: ~/.bin/task.yml
         - src: deploy_vars.yml
           dest: ~/.deploy_vars.yml
+        - src: ansible.cfg
+          dest: ~/.ansible.cfg
