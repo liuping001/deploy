@@ -18,7 +18,7 @@
         src: './{{item.src}}'
         dest: '{{item.dest}}'
         backup: no
-        mode: preserve
+        mode: "u+rwx,g-wx,o-wx"
       with_items:
         - src: deploy.sh
           dest: ~/.bin/deploy
@@ -28,3 +28,5 @@
           dest: ~/.deploy_vars.yml
         - src: ansible.cfg
           dest: ~/.ansible.cfg
+        - src: service.sh
+          dest: ~/.bin/service.sh

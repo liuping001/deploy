@@ -77,9 +77,13 @@ start_file|未定义start、stop、state属性时使用||start、stop、state|
 crontab|安装定时任务|name、minute、hour、day、month、weekday、job|install、remove
 
 **关于start_file属性的说明**
-> start_file: server1/start.sh 
-> 如果定义了start_file属性，start、stop、state属性将会失效。取而代之的是 start_file start; start_file stop; start_file state;    
-> 如果没有定义start_file，也没有定义 start、stop、state。将会使用默认的start_file={{server_name}}/start.sh，如例子中的server1/start.sh  
+> start_file: server1/start.sh
+> 1. 定义了start_file，且没定义 start、stop、state：  
+> start、stop、state默认行为为start_file start; start_file stop; start_file state;
+> 2. 定义了start、stop、state属性。start_file对应的行为将会被代替    
+> 3. 如果没有定义start_file，也没有定义 start、stop、state。将会使用默认的start_file=~/.bin/service.sh。所以需要安装~/.bin/service.sh到每一个机器下面,通过deploy server init安装，
+> 同时还需要定义exe_file, args连个参数，此时 start、stop、state对应命令为~/.bin/service.sh start {{exe_file}} {{args}}; ~/.bin/service.sh stop {{exe_file}};
+> ~/.bin/service.sh state {{exe_file}} 
 
 ### 定义机器
 * 在inventory中定义每个服务需要部署到那些host上

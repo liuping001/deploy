@@ -6,12 +6,23 @@
   vars_files:
     - "{{deploy_vars_file}}"
   vars:
-    default_start_file: '{{server_name}}/start.sh'
-    start: '{{vars[server_name].start_file|default(default_start_file)}} start'
-    stop: '{{vars[server_name].start_file|default(default_start_file)}} stop'
-    restart: '{{vars[server_name].start_file|default(default_start_file)}} restart'
-    state: '{{vars[server_name].start_file|default(default_start_file)}} state'
+    default_start_file: '~/.bin/service.sh'
+    exe_file: '{{vars[server_name].exe_file|default("")}}'
+    exe_args: '{{vars[server_name].args|default("")}}'
+    start: '{{vars[server_name].start_file|default(default_start_file)}} start {{exe_file}} {{exe_args}}'
+    stop: '{{vars[server_name].start_file|default(default_start_file)}} stop {{exe_file}}'
+    restart: '{{vars[server_name].start_file|default(default_start_file)}} restart {{exe_file}}'
+    state: '{{vars[server_name].start_file|default(default_start_file)}} state {{exe_file}}'
   tasks:
+    - name: "deploy system file"
+      copy:
+        src: '~/.bin/service.sh'
+        dest: '~/.bin/service.sh'
+        backup: no
+        mode: "u+rwx,g-wx,o-wx"
+      tags:
+        - init
+        - nover
     # push server files
     - name: "{{server_name}}: copy files"
       copy:
@@ -53,7 +64,6 @@
       tags:
         - push
         - nover
-
     # init cmd for server
     - name: "{{server_name}}: cmd"
       shell:
