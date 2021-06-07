@@ -89,7 +89,7 @@ crontab|安装定时任务|name、minute、hour、day、month、weekday、job|in
 * 在inventory中定义每个服务需要部署到那些host上
 ```yaml
 # 描述连接一个机器的方式
-127.0.0.1 ansible_sudo_host=127.0.0.1 ansible_ssh_user=liuping ansible_ssh_pass=liuping
+127.0.0.1 ansible_ssh_host=127.0.0.1 ansible_ssh_user=liuping ansible_ssh_pass=liuping
 
 [server1]
 127.0.0.1
