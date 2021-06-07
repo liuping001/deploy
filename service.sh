@@ -1,7 +1,22 @@
 set -e
 action=$1
-exe=$(pwd)/$2
-exe_path=$(readlink -f $exe)
+
+case $action in
+"help")
+  echo '通用的启动程序脚本，支持重入'
+  echo '包含操作: start、state、stop'
+  echo '  service.sh start exe args'
+  echo '  service.sh state exe'
+  echo '  service.sh stop'
+  exit 0
+;;
+esac
+
+if test ! -x "$2"; then
+  echo "不是可执行的文件:$2"
+  exit 1
+fi
+exe_path=$(readlink -f $2)
 
 function state() {
   exist=$(ps -ef|grep $exe_path|grep -v grep |grep -v color|wc -l)
@@ -13,19 +28,13 @@ function state() {
 }
 
 case $action in
-"help")
-  echo '通用的启动程序脚本，支持重入'
-  echo '包含操作: start、state、stop'
-  echo '  service.sh start exe args'
-  echo '  service.sh state exe'
-  echo '  service.sh stop'
-;;
 "start")
   if [ $(state) == "true" ];then
     echo "已经启动过了"
     exit 0
   fi
   nohup $exe_path ${@:3} > /dev/null 2>&1 &
+  exit 0
   ;;
 "stop")
   if [ $(state) == "false" ];then
@@ -37,6 +46,7 @@ case $action in
   do
     kill $pid
   done
+  exit 0
   ;;
 "state")
   msg=$(ps -ef|grep $exe_path|grep -v grep |grep -v color)
