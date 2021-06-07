@@ -1,3 +1,4 @@
+set -e
 action=$1
 exe=$(pwd)/$2
 exe_path=$(readlink -f $exe)
@@ -12,6 +13,13 @@ function state() {
 }
 
 case $action in
+"help")
+  echo '通用的启动程序脚本，支持重入'
+  echo '包含操作: start、state、stop'
+  echo '  service.sh start exe args'
+  echo '  service.sh state exe'
+  echo '  service.sh stop'
+;;
 "start")
   if [ $(state) == "true" ];then
     echo "已经启动过了"
