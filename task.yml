@@ -87,7 +87,7 @@
     - name: "{{server_name}}: fetch file"
       fetch:
         src: '{{dest_dir|default("")}}/{{item.src}}'
-        dest: '{{item.dest}}'
+        dest: '{{work_dir}}/{{item.dest}}'
         backup: no
         remote_src: True
         mode: preserve
