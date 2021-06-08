@@ -14,7 +14,7 @@
     stop: '{{vars[server_name].start_file|default(default_start_file)}} stop {{exe_file}}'
     restart: '{{vars[server_name].start_file|default(default_start_file)}} restart {{exe_file}}'
     state: '{{vars[server_name].start_file|default(default_start_file)}} state {{exe_file}}'
-    backup: '{{backup|default("no")}}'
+    g_backup: '{{backup|default("no")}}'
   tasks:
     - name: "deploy system file"
       copy:
@@ -30,7 +30,7 @@
       copy:
         src: '{{work_dir}}/{{item.src}}'
         dest: '{{dest_dir|default("")}}/{{item.dest}}'
-        backup: '{{vars[server_name].backup|default(backup)}}'
+        backup: '{{vars[server_name].backup|default(g_backup)}}'
         mode: preserve
       with_items:
         "{{vars[server_name].push|default({})}}"
@@ -43,7 +43,7 @@
       copy:
         src: '{{work_dir}}/{{item.0.src}}/{{item.1}}'
         dest: '{{dest_dir|default("")}}/{{item.0.dest}}/'
-        backup: '{{vars[server_name].backup|default(backup)}}'
+        backup: '{{vars[server_name].backup|default(g_backup)}}'
         mode: preserve
       with_subelements:
         - "{{vars[server_name].push|default({})}}"
@@ -59,7 +59,7 @@
       template:
         src: '{{work_dir}}/{{item.src}}'
         dest: '{{dest_dir|default("")}}/{{item.dest}}'
-        backup: '{{vars[server_name].backup|default(backup)}}'
+        backup: '{{vars[server_name].backup|default(g_backup)}}'
         mode: preserve
       with_items:
         "{{vars[server_name].push|default({})}}"
