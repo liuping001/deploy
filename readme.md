@@ -30,6 +30,9 @@ source ~/.bashrc
 # 目的文件夹，也可以不提供，默认为空。文件的目的地址为 dest_dir + dest
 dest_dir: /tmp/test_deploy/
 
+# 全局的传文件是否备份的开关
+backup: no
+
 # 可以将所有主机定义在一个分组，执行一些机器初始化的工作
 init_host:
   cmd:
@@ -37,6 +40,7 @@ init_host:
 
 # 定义1个服务
 server1:
+  backup: yes # 服务的传文件是否备份的开关
   push:
     - src: test.py # 只能是文件
       dest: server1/ #这里填文件夹: server1/ 。 也可以填文件:server1/test.py，但上级目录需要存在
