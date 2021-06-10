@@ -9,10 +9,7 @@ usage()
     echo "    deploy server1 cmd,start"
 }
 
-current_dir=`pwd`
-
-inventory="inventory"
-app_vars=""
+# 获取额外参数
 other_args()
 {
   while getopts "i:e:" option
@@ -27,8 +24,13 @@ other_args()
      esac
   done
 }
+
+# 获取额外参数
+inventory="inventory"
+app_vars=""
 other_args "${@:3}"
 
+current_dir=`pwd`
 if [ ! -f ${current_dir}/${inventory} ];then
   echo "file:"${inventory}" not exist in current dir"
   exit 1
