@@ -5,14 +5,15 @@ usage()
     echo ""
     echo "Usage: deploy server1,server2 action1,action2"
     echo "example:"
-    echo "    deploy server1,server2 push"
-    echo "    deploy server1 cmd,start"
+    echo "    deploy server1,server2 push,start"
+    echo "    deploy server1 push -e 'key=value'"
+    echo "    deploy server1 push -i inventory "
 }
 
 # 获取额外参数
 other_args()
 {
-  while getopts "i:e:" option
+  while getopts "i:e:v" option
   do
      case ${option} in
        i)
@@ -20,6 +21,9 @@ other_args()
         ;;
        e)
           app_vars="${OPTARG}"
+          ;;
+       v)
+         info="yes"
         ;;
      esac
   done
@@ -28,14 +32,10 @@ other_args()
 # 获取额外参数
 inventory="inventory"
 app_vars=""
+info=""
 other_args "${@:3}"
 
 current_dir=`pwd`
-if [ ! -f ${current_dir}/${inventory} ];then
-  echo "file:"${inventory}" not exist in current dir"
-  exit 1
-fi
-
 # 获取当前工程根目录
 proj_dir=`pwd`
 find_work_dir_count=10
@@ -45,7 +45,7 @@ do
     ((find_work_dir_count--))
     if [ $find_work_dir_count == 0 ];then
         echo "not find dir deploy/"
-        exit
+        exit 1
     fi
 done
 deploy_dir=${proj_dir}/deploy
@@ -58,25 +58,30 @@ if [ -f ${current_dir}/deploy_vars.yml ];then
   deploy_vars_file=${current_dir}/deploy_vars.yml
 fi
 
-echo -e "\033[32m"
-echo "info: "
-echo "-> project path [$proj_dir]"
-echo "-> deploy path [$deploy_dir]"
-echo "-> deploy vars path [$deploy_vars_file]"
 
 if [ $# -lt 2 ];then
-  echo -e "\033[0m"
   usage
-  exit
+  exit 1
+fi
+
+if [ ! -f ${current_dir}/${inventory} ];then
+  echo "file:"${inventory}" not exist in current dir"
+  exit 1
 fi
 
 server_list=$(echo $1 | tr "," "\n")
 action_list=$(echo $2 | tr "," "\n")
 
-echo "-> server: "$server_list
-echo "-> action: "$action_list
-
-echo -e "\033[0m"
+if [ "$info" == "yes" ];then
+  echo -e "\033[32m"
+  echo "info: "
+  echo "-> project path [$proj_dir]"
+  echo "-> deploy path [$deploy_dir]"
+  echo "-> deploy vars path [$deploy_vars_file]"
+  echo "-> server: "$server_list
+  echo "-> action: "$action_list
+  echo -e "\033[0m"
+fi
 
 for server in ${server_list}
 do
