@@ -140,7 +140,7 @@
       shell:
         cmd: 'cd {{dest_dir|default("")}} && {{vars[server_name].state|default(state)}}'
       register: ret
-      failed_when: "ret.stderr != ''"
+      failed_when: "ret.rc != 0"
       ignore_errors: yes
       tags:
         - state
