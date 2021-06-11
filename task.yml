@@ -70,7 +70,7 @@
     # init cmd for server
     - name: "{{server_name}}: cmd"
       shell:
-        cmd: '{{item}}'
+        cmd: 'cd {{dest_dir|default("")}} && {{item}}'
         warn: False
       register: ret
       when: ret is undefined or ret.rc == 0
