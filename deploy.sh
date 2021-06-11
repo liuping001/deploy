@@ -13,7 +13,7 @@ usage()
 # 获取额外参数
 other_args()
 {
-  while getopts "i:e:v" option
+  while getopts "i:e:vs" option
   do
      case ${option} in
        i)
@@ -25,6 +25,9 @@ other_args()
        v)
          info="yes"
         ;;
+       s)
+         short_print="yes"
+         ;;
      esac
   done
 }
@@ -33,6 +36,7 @@ other_args()
 inventory="inventory"
 app_vars=""
 info=""
+short_print=""
 other_args "${@:3}"
 
 current_dir=`pwd`
@@ -87,6 +91,12 @@ for server in ${server_list}
 do
   for action in ${action_list}
     do
-      ansible-playbook  -i ${current_dir}/${inventory} ~/.bin/task.yml --tags=$action -e "server_name=$server work_dir=${proj_dir} deploy_vars_file=${deploy_vars_file} ""$app_vars"
+      if [ "$short_print" == "yes" ];then
+        export ANSIBLE_FORCE_COLOR=true #管道过滤的时候保留颜色
+        ansible-playbook  -i ${current_dir}/${inventory} ~/.bin/task.yml --tags=$action -e "server_name=$server work_dir=${proj_dir} deploy_vars_file=${deploy_vars_file} ""$app_vars" | \
+        grep -v 'PLAY RECAP' | grep -v 'WARN \['| grep -v 'TASK \[' | grep -v 'PLAY \['| grep -v ^$
+      else
+        ansible-playbook  -i ${current_dir}/${inventory} ~/.bin/task.yml --tags=$action -e "server_name=$server work_dir=${proj_dir} deploy_vars_file=${deploy_vars_file} ""$app_vars"
+      fi
     done
 done
