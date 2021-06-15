@@ -1,13 +1,13 @@
 # 简介
 这是一个通用的服务器部署工具,使用的方式如example所示：
-1. 通过在deploy/test/group_vars/all.yml配置文件中描述每个服务的部署行为，如push,start,stop,state,cmd,crontab
-2. 通过在deploy/test/inventory文件中描述每个服务需要部署到那些机器上
+1. 通过在deploy/group_vars/all.yml配置文件中描述每个服务的部署行为，如push,start,stop,state,cmd,crontab
+2. 通过在deploy/inventory文件中描述每个服务需要部署到那些机器上
 3. 使用"deploy server1,server2 action1,action2" 进行部署。例如 
 > deploy server1 push  
 > deploy server1 start
 
 注：
-* 运行deploy命令需要在有inventory文件的目录中。例如example中的列子需要 cd example/deploy/test;  
+* 运行deploy命令需要在有inventory文件的目录中。例如example中的列子需要 cd example/deploy/;  
 * deploy命令会在当前文件路径上寻找deploy文件夹，如果找到/根目录还没有找到，就输出"not find dir deploy/"  
 * 如果有多套环境，deploy可以创建表示不同环境的文件夹。如：test、dev、live  
 * 每个环境中在inventory文件中定义机器分组的信息，在group_vars文件夹中定义组变量文件，all.yml表示默认组变量，可以在具体的组中覆盖同名变量  
