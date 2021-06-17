@@ -8,6 +8,8 @@ usage()
     echo "    deploy server1,server2 push,start"
     echo "    deploy server1 push -e 'key=value'"
     echo "    deploy server1 push -i inventory "
+    echo "    deploy server1 push -v # 显示info"
+    echo "    deploy server1 push -s # 简化输出 short print"
 }
 
 # 获取额外参数
