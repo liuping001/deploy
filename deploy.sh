@@ -12,6 +12,11 @@ usage()
     echo "    deploy server1 push -s # 简化输出 short print"
 }
 
+if [ $# -lt 2 ];then
+  usage
+  exit 1
+fi
+
 # 获取额外参数
 other_args()
 {
@@ -64,11 +69,6 @@ if [ -f ${current_dir}/deploy_vars.yml ];then
   deploy_vars_file=${current_dir}/deploy_vars.yml
 fi
 
-
-if [ $# -lt 2 ];then
-  usage
-  exit 1
-fi
 
 if [ ! -f ${current_dir}/${inventory} ];then
   echo "file:"${inventory}" not exist in current dir"
