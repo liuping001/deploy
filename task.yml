@@ -162,7 +162,7 @@
         day: "{{item.day|default('*')}}"
         month: "{{item.month|default('*')}}"
         weekday: "{{item.weekday|default('*')}}"
-        job: "{{item.job}}"
+        job: "cd {{dest_dir|default('')}} && {{item.job}}"
         state: present
       with_items:
         "{{vars[server_name].crontab|default({})}}"
@@ -178,7 +178,7 @@
         day: "{{item.day|default('*')}}"
         month: "{{item.month|default('*')}}"
         weekday: "{{item.weekday|default('*')}}"
-        job: "{{item.job}}"
+        job: "cd {{dest_dir|default('')}} && {{item.job}}"
         state: absent
       with_items:
         "{{vars[server_name].crontab|default({})}}"
