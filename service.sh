@@ -49,6 +49,7 @@ case $action in
   exit 0
   ;;
 "state")
+  set +e
   msg=$(ps -ef|grep $exe_path|grep -v grep |grep -v color)
   echo $msg
   exit 0
