@@ -29,7 +29,7 @@
     - name: "{{server_name}}: copy files"
       copy:
         src: '{{work_dir}}/{{item.src}}'
-        dest: '{{dest_dir}}/{{item.dest}}'
+        dest: '{{dest_dir|default("~")}}/{{item.dest}}'
         backup: '{{vars[server_name].backup|default(g_backup)}}'
         mode: preserve
       with_items:
@@ -42,7 +42,7 @@
     - name: "{{server_name}}: copy choose files"
       copy:
         src: '{{work_dir}}/{{item.0.src}}/{{item.1}}'
-        dest: '{{dest_dir}}/{{item.0.dest}}/'
+        dest: '{{dest_dir|default("~")}}/{{item.0.dest}}/'
         backup: '{{vars[server_name].backup|default(g_backup)}}'
         mode: preserve
       with_subelements:
@@ -58,7 +58,7 @@
     - name: "{{server_name}}: template files"
       template:
         src: '{{work_dir}}/{{item.src}}'
-        dest: '{{dest_dir}}/{{item.dest}}'
+        dest: '{{dest_dir|default("~")}}/{{item.dest}}'
         backup: '{{vars[server_name].backup|default(g_backup)}}'
         mode: preserve
       with_items:
@@ -70,7 +70,7 @@
     # init cmd for server
     - name: "{{server_name}}: cmd"
       shell:
-        cmd: 'cd {{dest_dir}} && {{item}}'
+        cmd: 'cd {{dest_dir|default("~")}} && {{item}}'
         warn: False
       register: ret
       when: ret is undefined or ret.rc == 0
@@ -86,7 +86,7 @@
 
     - name: "{{server_name}}: fetch file"
       fetch:
-        src: '{{dest_dir}}/{{item.src}}'
+        src: '{{dest_dir|default("~")}}/{{item.src}}'
         dest: '{{work_dir}}/{{item.dest}}'
         backup: no
         remote_src: True
@@ -114,7 +114,7 @@
     # start server
     - name: "{{server_name}}: start"
       shell:
-        cmd: 'cd {{dest_dir}} && {{vars[server_name].start|default(start)}}'
+        cmd: 'cd {{dest_dir|default("~")}} && {{vars[server_name].start|default(start)}}'
       tags:
         - start
         - nover
@@ -122,7 +122,7 @@
     # stop server
     - name: "{{server_name}}: stop"
       shell:
-        cmd: 'cd {{dest_dir}} && {{vars[server_name].stop|default(stop)}}'
+        cmd: 'cd {{dest_dir|default("~")}} && {{vars[server_name].stop|default(stop)}}'
       tags:
         - stop
         - nover
@@ -130,7 +130,7 @@
     # restart server
     - name: "{{server_name}}: restart"
       shell:
-        cmd: 'cd {{dest_dir}} && {{vars[server_name].restart|default(restart)}}'
+        cmd: 'cd {{dest_dir|default("~")}} && {{vars[server_name].restart|default(restart)}}'
       tags:
         - restart
         - nover
@@ -162,7 +162,7 @@
         day: "{{item.day|default('*')}}"
         month: "{{item.month|default('*')}}"
         weekday: "{{item.weekday|default('*')}}"
-        job: "cd {{dest_dir}} && {{item.job}}"
+        job: "cd {{dest_dir|default('~')}} && {{item.job}}"
         state: present
       with_items:
         "{{vars[server_name].crontab|default({})}}"
@@ -178,7 +178,7 @@
         day: "{{item.day|default('*')}}"
         month: "{{item.month|default('*')}}"
         weekday: "{{item.weekday|default('*')}}"
-        job: "cd {{dest_dir}} && {{item.job}}"
+        job: "cd {{dest_dir|default('~')}} && {{item.job}}"
         state: absent
       with_items:
         "{{vars[server_name].crontab|default({})}}"
