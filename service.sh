@@ -17,6 +17,7 @@ if test ! -x "$2"; then
   exit 1
 fi
 exe_path=$(readlink -f $2)
+cd $(dirname $exe_path)
 
 function state() {
   exist=$(ps -ef|grep $exe_path|grep -v grep |grep -v color|wc -l)
