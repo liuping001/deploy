@@ -19,7 +19,7 @@
     - name: "deploy system file"
       copy:
         src: '~/.bin/service.sh'
-        dest: '~/.bin/service.sh'
+        dest: '~/.bin/'
         backup: no
         mode: "u+rwx,g-wx,o-wx"
       tags:
