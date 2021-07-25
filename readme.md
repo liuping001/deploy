@@ -19,6 +19,8 @@ sudo yum install ansible -y
 ```
 * 安装deploy
 ```
+git clone https://github.com/liuping001/deploy.git
+cd deploy
 ansible-playbook -i "localhost," -c local install.yml 
 source ~/.bashrc
 ```
@@ -27,7 +29,7 @@ source ~/.bashrc
 * 在all.yml定义部署服务的配置项。
 例如：
 ```yaml
-# 目的文件夹，也可以不提供，默认为空。文件的目的地址为 dest_dir + dest
+# 目的文件夹，一定要用/结尾，也可以不提供，默认为空。文件的目的地址为 dest_dir + dest
 dest_dir: /tmp/test_deploy/
 
 # 全局的传文件是否备份的开关
@@ -35,6 +37,7 @@ backup: no
 
 # 定义1个服务
 server1:
+  dest_dir: /tmp/server1/ #优先级更高
   backup: yes # 服务的传文件是否备份的开关
   push:
     - src: test.py # 只能是文件
