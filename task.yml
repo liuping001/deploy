@@ -31,7 +31,7 @@
     - name: "{{server_name}}: copy files"
       copy:
         src: '{{work_dir}}/{{item.src}}'
-        dest: '{{dest_dir|default("")}}{{item.dest}}'
+        dest: '{{g_dest_dir|default("")}}{{item.dest}}'
         backup: '{{vars[server_name].backup|default(g_backup)}}'
         mode: preserve
       with_items:
