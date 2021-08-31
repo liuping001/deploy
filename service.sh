@@ -35,6 +35,11 @@ case $action in
     exit 0
   fi
   nohup $exe_path ${@:3} > /dev/null 2>&1 &
+  sleep 1
+  if [ $(state) == "true" ];then
+    echo "启动成功"
+    exit 0
+  fi
   exit 0
   ;;
 "stop")
