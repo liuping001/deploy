@@ -35,12 +35,13 @@ case $action in
     exit 0
   fi
   nohup $exe_path ${@:3} > /dev/null 2>&1 &
-  sleep 1
+  sleep 3
   if [ $(state) == "true" ];then
     echo "启动成功"
     exit 0
   fi
-  exit 0
+  echo "启动中..."
+  exit 1
   ;;
 "stop")
   if [ $(state) == "false" ];then
@@ -52,7 +53,13 @@ case $action in
   do
     kill $pid
   done
-  exit 0
+  sleep 3
+  if [ $(state) == "false" ];then
+    echo "停止成功"
+    exit 0
+  fi
+  echo "停止中..."
+  exit 1
   ;;
 "state")
   set +e
