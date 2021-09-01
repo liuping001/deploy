@@ -34,7 +34,8 @@ case $action in
     echo "已经启动过了"
     exit 0
   fi
-  nohup $exe_path ${@:3} > /dev/null 2>&1 &
+  log="/tmp/std_"$(basename $exe_path)"_"$(date +%Y-%m-%d_%H-%M-%S)".log"
+  nohup $exe_path ${@:3} > $log 2>&1 &
   sleep 3
   if [ $(state) == "true" ];then
     echo "启动成功"
