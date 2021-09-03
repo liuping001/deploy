@@ -171,6 +171,22 @@
       tags:
         - install
         - nover
+    - name: "{{server_name}}: disabled cron"
+      cron:
+        name: "{{item.name|default('*')}}"
+        minute: "{{item.minute|default('*')}}"
+        hour: "{{item.hour|default('*')}}"
+        day: "{{item.day|default('*')}}"
+        month: "{{item.month|default('*')}}"
+        weekday: "{{item.weekday|default('*')}}"
+        job: "cd {{g_dest_dir|default('')}} && {{item.job}}"
+        state: present
+        disabled: yes
+      with_items:
+        "{{vars[server_name].crontab|default({})}}"
+      tags:
+        - disabled
+        - nover
 
     - name: "{{server_name}}: remove cron"
       cron:
